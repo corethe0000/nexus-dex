@@ -38,6 +38,13 @@ export interface StoredSwap {
   seq?: number; //raised on every change, for merging the copies of several tabs (store-merge.ts)
 }
 
+//another address for my EVM payment (claimTo) or my EVM refund (refundTo); owner = the lock's recipient or sender
+export interface OtherAddressOption {
+  kind: 'claim' | 'refund';
+  deadline?: number;
+  owner: Address;
+}
+
 //a wallet step this page asked for and the user has not answered yet (only in memory: stale after a reload)
 export interface WalletWait {
   wallet: 'nexus' | 'evm';
@@ -279,35 +286,45 @@ export class Desk {
     void this.tick();
   }
 
-  //the collect of my EVM payment fails or hangs (a token that froze my address refuses it): my own wallet (the lock's
-  //recipient, the only one the contract lets do this) can have it paid to another address of mine with claimTo
-  collectToOption(s: StoredSwap): { deadline?: number; recipient: Address } | null {
+  //my EVM payment or my EVM refund fails or hangs (a token that froze my address refuses it): my own wallet for the
+  //lock's recipient (claimTo) or sender (refundTo), the only one the contract lets do this, can have it paid to
+  //another address of mine
+  otherAddressOption(s: StoredSwap): OtherAddressOption | null {
     const lock = s.rec.seen?.evm;
-    const recipient = s.rec.evm.recipient;
-    if (s.stage !== 'running' || !s.rec.secret || !s.rec.evmLock || !lock || (lock.status !== 'confirmed' && lock.status !== 'claiming') || !this.recipientWallet(s)) {
+    if (s.stage !== 'running' || !s.rec.evmLock || !lock) {
       return null;
     }
     const p = s.rec.pending;
     const failed = s.last?.action === 'error';
-    const slow = p?.kind === 'claim' && Date.now() / 1000 - p.at > collectHelpAfter;
-    //sent and gone, then sent again: a collect the chain takes but that fails there (the wallet did not refuse it)
-    const again = (s.rec.txs ?? []).filter((x) => x.chain === 'evm' && x.kind === 'claim' && x.by === 'me').length >= 2;
-    return failed || slow || again ? { deadline: lock.deadline, recipient } : null;
+    //sent and gone, then sent again: a step the chain takes but that fails there (the wallet did not refuse it)
+    const sentTwice = (kind: 'claim' | 'refund') => (s.rec.txs ?? []).filter((x) => x.chain === 'evm' && x.kind === kind && x.by === 'me').length >= 2;
+    const stuck = (kind: 'claim' | 'refund') => failed || (p?.kind === kind && Date.now() / 1000 - p.at > collectHelpAfter) || sentTwice(kind);
+    if (s.rec.secret && (lock.status === 'confirmed' || lock.status === 'claiming') && this.ownerWallet(s, 'claim') && stuck('claim')) {
+      return { kind: 'claim', deadline: lock.deadline, owner: s.rec.evm.recipient };
+    }
+    const due = lock.deadline !== undefined && (s.rec.seen?.evmNow ?? 0) >= lock.deadline;
+    if (due && (lock.status === 'confirmed' || lock.status === 'refunding') && this.ownerWallet(s, 'refund') && stuck('refund')) {
+      return { kind: 'refund', owner: s.rec.evm.sender };
+    }
+    return null;
   }
 
-  //a wallet connected here for the lock's recipient address: the page's own, or one picked to collect (collectWith)
-  private recipientWallet(s: StoredSwap): EvmSession | null {
-    const r = s.rec.evm.recipient.toLowerCase();
+  //a wallet connected here for the lock's recipient (claim) or sender (refund): the page's own, or one picked to
+  //collect (collectWith)
+  private ownerWallet(s: StoredSwap, kind: 'claim' | 'refund'): EvmSession | null {
+    const r = (kind === 'claim' ? s.rec.evm.recipient : s.rec.evm.sender).toLowerCase();
     return [this.ctx.evm(), this.helpers.get(s.id)].find((x): x is EvmSession => !!x?.wallet && x.address.toLowerCase() === r) ?? null;
   }
 
-  async collectTo(id: Hex, toText: string): Promise<Hex> {
+  async toOtherAddress(id: Hex, toText: string): Promise<Hex> {
     const { t } = T();
     const s = this.saved.swaps.find((x) => x.id === id);
-    const w = s && this.collectToOption(s) ? this.recipientWallet(s) : null;
-    if (!s || !w) {
+    const option = s ? this.otherAddressOption(s) : null;
+    const w = s && option ? this.ownerWallet(s, option.kind) : null;
+    if (!s || !option || !w) {
       throw new Error(t.swToUnavailable);
     }
+    const kind = option.kind;
     const chainId = s.offer.offer.evmChainId;
     const c = this.ctx.info.chains[chainId]!;
     const text = toText.trim();
@@ -315,26 +332,28 @@ export class Desk {
       throw new Error(t.swToBadAddress);
     }
     const to = getAddress(text);
-    const never = [s.rec.evm.recipient, c.swap, s.rec.evm.token].map((x) => x.toLowerCase());
+    const never = [option.owner, c.swap, s.rec.evm.token].map((x) => x.toLowerCase());
     if (never.includes(to.toLowerCase())) {
       throw new Error(t.swToSameAddress);
     }
     const leg = new EvmLeg(this.reader(chainId), c.swap, c.confirmations, BigInt(c.fromBlock));
     const lockId = s.rec.evmLock!;
     const st = await leg.state(lockId);
-    if (st.state !== 'open' || st.recipient.toLowerCase() !== s.rec.evm.recipient.toLowerCase()) {
+    const lockOwner = kind === 'claim' ? st.recipient : st.sender;
+    if (st.state !== 'open' || lockOwner.toLowerCase() !== option.owner.toLowerCase()) {
       throw new Error(t.swToUnavailable);
     }
     await useChain(w, this.ctx.site, chainId, c);
-    //marked first, so the runner does not send its own collect (which fails the same way) meanwhile
+    //marked first, so the runner does not send its own collect or refund (which fails the same way) meanwhile
     const r = this.runners.get(id);
     const rec = r?.rec ?? s.rec;
-    rec.pending = { kind: 'claim', ref: '', at: Date.now() / 1000 };
+    rec.pending = { kind, ref: '', at: Date.now() / 1000 };
     this.changed();
     try {
-      const tx = await this.inWallet(id, 'evm', 'claimTo', () => leg.claimTo(signer(w, this.ctx.site, chainId, c), lockId, `0x${s.rec.secret!}`, to));
-      rec.pending = { kind: 'claim', ref: tx, at: Date.now() / 1000 };
-      noteTx(rec, { chain: 'evm', kind: 'claim', by: 'me', hash: tx });
+      const sign = signer(w, this.ctx.site, chainId, c);
+      const tx = await this.inWallet(id, 'evm', kind === 'claim' ? 'claimTo' : 'refundTo', () => (kind === 'claim' ? leg.claimTo(sign, lockId, `0x${s.rec.secret!}`, to) : leg.refundTo(sign, lockId, to)));
+      rec.pending = { kind, ref: tx, at: Date.now() / 1000 };
+      noteTx(rec, { chain: 'evm', kind, by: 'me', hash: tx });
       s.rec = rec;
       this.changed();
       return tx;

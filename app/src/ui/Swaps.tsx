@@ -265,11 +265,12 @@ function CollectMyself({ app, s, a }: { app: AppState; s: StoredSwap; a: Amounts
   );
 }
 
-//the collect to my own address fails or hangs (a token that froze it refuses the payment): my wallet for that address
-//can have the payment sent to another address of mine (NexusSwap claimTo)
+//the collect or the refund to my own address fails or hangs (a token that froze it refuses the payment): my wallet
+//for that address can have it sent to another address of mine (NexusSwap claimTo / refundTo)
 function CollectTo({ app, s, a }: { app: AppState; s: StoredSwap; a: Amounts }) {
   const { t, f } = useT();
-  const option = app.desk.collectToOption(s);
+  const option = app.desk.otherAddressOption(s);
+  const [kind, setKind] = useState<'claim' | 'refund'>('claim');
   const [to, setTo] = useState('');
   const [error, setError] = useState('');
   const [busy, setBusy] = useState(false);
@@ -281,7 +282,8 @@ function CollectTo({ app, s, a }: { app: AppState; s: StoredSwap; a: Amounts }) 
     setBusy(true);
     setError('');
     try {
-      await app.desk.collectTo(s.id, to);
+      await app.desk.toOtherAddress(s.id, to);
+      setKind(option!.kind);
       setSent(true);
     } catch (e) {
       //the wallet's or the desk's own text
@@ -291,13 +293,13 @@ function CollectTo({ app, s, a }: { app: AppState; s: StoredSwap; a: Amounts }) 
     }
   }
   if (sent) {
-    return <p className="note">{f(t.swToSent, { chain: a.chainName })}</p>;
+    return <p className="note">{f(kind === 'refund' ? t.swRefundToSent : t.swToSent, { chain: a.chainName })}</p>;
   }
   return (
     <details className="collect-to">
-      <summary>{t.swToTitle}</summary>
+      <summary>{option!.kind === 'refund' ? t.swRefundToTitle : t.swToTitle}</summary>
       <p>
-        {f(t.swToText, { amount: a.evmText, address: short(option!.recipient) })}
+        {f(option!.kind === 'refund' ? t.swRefundToText : t.swToText, { amount: a.evmText, address: short(option!.owner) })}
         {option!.deadline ? ` ${f(t.swCollectBefore, { time: clock(option!.deadline) })}` : ''}
       </p>
       <label className="field">

@@ -19,6 +19,10 @@ const maxOfferLife = 8 * 86400;
 const maxLiveOffers = 5000;
 const maxKeptOffers = 20000;
 const maxKeptTakes = 20000;
+//takes voided by the makers (the taker never locked) per taker key or Nexus profile in 24 h before takes are refused
+const maxVoidsPerDay = 3;
+//an agent key stays with the maker that first used it for a week (seconds)
+const agentBindTime = 604800;
 
 export const defaultBookSettings: Omit<BookSettings, 'chains'> = { aliveWindow: 90, acceptWindow: 60, aliveSkew: 60, maxOffersPerMaker: 50 };
 
@@ -175,13 +179,27 @@ export class Book {
     }
     //an agent key belongs to one maker: an offer naming another maker's agent would keep that maker's offers listed
     //(its alive beat) while it is away
-    if (live.some((o) => lower(o.offer.agent) === lower(offer.agent) && lower(o.offer.maker) !== lower(offer.maker))) {
+    //checked against every offer kept (also taken and cancelled ones), so a maker away for a while keeps its agent
+    const owner = this.agentOwner(offer.agent, now);
+    if (owner && owner !== lower(offer.maker)) {
       throw new BookError('this agent key belongs to another maker', 409);
     }
     this.offers.set(id, { offer, sig, by, postedAt: now, status: 'open' });
     this.alive.set(lower(offer.agent), now);
     this.onChange();
     return id;
+  }
+
+  //the maker that first used this agent key in an offer still kept here (a page makes its agent key at random, so
+  //nobody can claim one before its own maker shows it in an offer)
+  private agentOwner(agent: Address, now: number): string | null {
+    let first: { maker: string; at: number } | null = null;
+    for (const o of this.offers.values()) {
+      if (lower(o.offer.agent) === lower(agent) && now - o.postedAt < agentBindTime && (!first || o.postedAt < first.at)) {
+        first = { maker: lower(o.offer.maker), at: o.postedAt };
+      }
+    }
+    return first?.maker ?? null;
   }
 
   async cancel(offerId: Hex, sig: Hex): Promise<void> {
@@ -234,6 +252,12 @@ export class Book {
     }
     if (lower(take.taker) === lower(o.offer.maker) || take.nexusGenesis.toLowerCase() === o.offer.nexusGenesis.toLowerCase()) {
       throw new BookError('cannot take your own offer');
+    }
+    //takes the makers gave up on because the taker never locked (void): one funded Nexus profile with throwaway taker
+    //keys could otherwise reserve every offer in turn
+    const voids = [...this.takes.values()].filter((t) => t.status === 'void' && now - t.at < 86400 && (lower(t.take.taker) === lower(take.taker) || t.take.nexusGenesis.toLowerCase() === take.nexusGenesis.toLowerCase())).length;
+    if (voids >= maxVoidsPerDay) {
+      throw new BookError('too many takes that were never locked, try again tomorrow', 429);
     }
     //one waiting take per taker: a taker cannot block many offers at once
     for (const t of this.takes.values()) {

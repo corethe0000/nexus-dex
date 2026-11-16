@@ -15,6 +15,9 @@ export interface HoldStore {
   delete(genesis: string): void;
 }
 
+//key suffix of the last release of a profile's slot (kept in the same store as the holds)
+const doneKey = ':released';
+
 export class SlotGate {
   constructor(private holds: HoldStore = new Map<string, Hold>()) {}
 
@@ -28,10 +31,18 @@ export class SlotGate {
     return false;
   }
 
-  release(genesis: string, swap: string) {
+  release(genesis: string, swap: string, now = Date.now() / 1000) {
     if (this.holds.get(genesis)?.swap === swap) {
       this.holds.delete(genesis);
+      this.holds.set(`${genesis}${doneKey}`, { swap, at: now });
     }
+  }
+
+  //a swap seen here (this process, or a tab sharing the store) let the slot go within `within` seconds: a fresh value
+  //in the slot is then most likely that swap's, not another program's
+  releasedRecently(genesis: string, now: number, within: number): boolean {
+    const d = this.holds.get(`${genesis}${doneKey}`);
+    return !!d && now - d.at < within;
   }
 
   holder(genesis: string): string | undefined {

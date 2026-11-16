@@ -70,6 +70,8 @@ const nexusTxGap = 10;
 const clockTolerance = 120;
 //an EVM claim or refund waiting in the queue gets a higher fee at most this often (each time 30 % or more)
 const maxBumps = 10;
+//a resent lock keeps its first deadline when the fresh one is at most this much earlier (seconds, clock jitter)
+const lockDeadlineJitter = 60;
 //wallet error codes that mean nothing was sent: refused by the user, not connected or logged in, locked, busy
 const notSentCodes = new Set([4001, 4100, 4200, 4900, -32002]);
 
@@ -435,7 +437,11 @@ export class SwapRunner {
     }
     const t = this.timing;
     const need = this.rec.role === 'initiator' ? t.participantLock + t.safety : t.minParticipantWindow;
-    return old <= fresh && old - myNow >= need ? old : fresh;
+    //a fresh deadline a few seconds earlier is only clock jitter between two reads: a resend with a new deadline would
+    //be a second lock (new id) while the first one can still get mined. The reserve before the other deadline is far
+    //larger than this
+    const jitter = Math.min(lockDeadlineJitter, t.claimMargin / 3);
+    return old <= fresh + jitter && old - myNow >= need ? old : fresh;
   }
 
   private async lock(deadline: number) {
@@ -522,6 +528,19 @@ export class SwapRunner {
     const lock = this.rec.nexusLock!;
     if (!secretMatches(slot.value, fromHexBytes(this.rec.hashlock))) {
       if (slot.value.some((b) => b !== 0)) {
+        //another program on this profile (the maker program next to a page) can be between its reveal and its credit,
+        //the gate only sees this process: leave a fresh value alone (unless a swap here just let the slot go, then it is
+        //that one's), and never when my own claim would run short of time
+        const now = this.rec.seen?.nexusNow ?? Date.now() / 1000;
+        const left = (this.rec.seen?.nexus.deadline ?? Infinity) - now;
+        const oursJustNow = this.gate.releasedRecently(me, Date.now() / 1000, this.maxHold());
+        if (!oursJustNow && now - slot.modified < this.maxHold() && left > 2 * this.maxHold()) {
+          const note = 'the reveal slot was just written by another swap of this profile: waiting';
+          if (!this.rec.log[this.rec.log.length - 1]?.endsWith(note)) {
+            this.say(note);
+          }
+          return false;
+        }
         this.say('the reveal slot holds another value (another swap of this profile?): writing over it');
       }
       const txid = await this.signers.nexus.reveal(fromHexBytes(secret), lock);

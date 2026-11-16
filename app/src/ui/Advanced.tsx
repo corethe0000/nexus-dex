@@ -7,6 +7,7 @@ import { tokenOf, type TokenInfo } from '../lib/config';
 import type { MyOfferState } from '../lib/desk';
 import { fromUnits, span, toUnits } from '../lib/format';
 import { useT, type Texts } from '../lib/i18n';
+import { termsAccepted } from '../lib/terms';
 import { FeeNote, MarketNote } from './MarketNote';
 import { ShareLink } from './ShareLink';
 import { StableMarketPanel } from './MarketCharts';
@@ -299,6 +300,11 @@ function Take({ app, row, onSwap }: { app: AppState; row: Row; onSwap: () => voi
     setBusy(true);
     setError('');
     try {
+      //the notice before the first swap, once
+      if (!termsAccepted()) {
+        app.openDialog('terms');
+        return;
+      }
       askToNotify();
       await app.desk.takeOffer(row.o, nexusAccount!);
       onSwap();
@@ -427,6 +433,11 @@ function Make({ app, bestAsk, bestBid, group }: { app: AppState; bestAsk?: Row; 
     setBusy(true);
     setMsg(null);
     try {
+      //the notice before the first swap, once
+      if (!termsAccepted()) {
+        app.openDialog('terms');
+        return;
+      }
       askToNotify();
       const ladder = splitOffer(nexusUnits!, priceUnits!, acct!.decimals, Number(pieces), Number(step.replace(',', '.')), sell);
       for (const [i, p] of ladder.entries()) {

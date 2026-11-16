@@ -210,6 +210,39 @@ describe('order book', () => {
     await b.take(takeToJson(tk2), await sign(other, 'Take', tk2), t0 + 6);
   });
 
+  it('refuses takes from a taker or Nexus profile whose takes were voided 3 times in a day', async () => {
+    const b = newBook();
+    let at = t0;
+    //three takes the maker gave up on, from the same Nexus profile with different taker keys
+    for (let i = 0; i < 3; i++) {
+      const who = privateKeyToAccount(`0x${String(5 + i).repeat(64)}` as Hex);
+      const id = await posted(b, offer({ nonce: newNonce() }));
+      const tk = take(id, { taker: who.address, agent: who.address, hashlock: `0x${String(i).repeat(64)}` as Hex });
+      const r = await b.take(takeToJson(tk), await sign(who, 'Take', tk), ++at);
+      await b.accept(r.id, await sign(agent, 'Accept', { takeId: r.id }), ++at);
+      await b.void(r.id, await sign(agent, 'Void', { takeId: r.id }), ++at);
+    }
+    const id = await posted(b, offer({ nonce: newNonce() }));
+    const tk = take(id, { hashlock: `0x${'9'.repeat(64)}` as Hex });
+    await rejects(b.take(takeToJson(tk), await sign(taker, 'Take', tk), ++at), 429);
+    //another profile still can
+    const ok = take(id, { taker: other.address, agent: other.address, nexusGenesis: 'c3'.repeat(32), hashlock: `0x${'8'.repeat(64)}` as Hex });
+    await b.take(takeToJson(ok), await sign(other, 'Take', ok), at);
+  });
+
+  it('an agent key stays with the maker that first used it, also when none of its offers is open', async () => {
+    const b = newBook();
+    const id = await posted(b);
+    const ck = await sign(maker, 'Cancel', { offerId: id });
+    await b.cancel(id, ck);
+    //someone else names our agent in an offer of their own
+    const o = offer({ maker: other.address, nonce: newNonce() });
+    await rejects(b.post(offerToJson(o), await sign(other, 'Offer', o), t0 + 10), 409);
+    //our maker can go on with it
+    const mine = offer({ nonce: newNonce() });
+    await b.post(offerToJson(mine), await sign(maker, 'Offer', mine), t0 + 10);
+  });
+
   it('the offer quota counts who signed, not the maker an offer names', async () => {
     const b = new Book({ ...defaultBookSettings, maxOffersPerMaker: 2, chains: { '56': { tokens: [usdt] } } });
     //someone else's receive-only offers name our maker (signed by their own agent key)

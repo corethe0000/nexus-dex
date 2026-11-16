@@ -104,6 +104,10 @@ export async function openIn(ctx, who, wallet, prefs = startPrefs) {
       localStorage.setItem('nexus-dex:prefs', p);
     }
   }, prefs);
+  //the notice before the first swap is agreed (terms-e2e.mjs tests it with TERMS=show)
+  if (process.env.TERMS !== 'show') {
+    await ctx.addInitScript(() => localStorage.setItem('nexus-dex:terms', '1'));
+  }
   if (wallet === 'none') {
     //nothing injected
   } else if (wallet) {

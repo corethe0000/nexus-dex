@@ -6,6 +6,7 @@ import type { AppState } from '../App';
 import { askToNotify } from '../lib/attention';
 import { fromUnits, span, toUnits } from '../lib/format';
 import { useT } from '../lib/i18n';
+import { termsAccepted } from '../lib/terms';
 import { takeLinkedOffer } from '../lib/link';
 import { accountsFor, spendable } from '../lib/nexus';
 import { Knot } from './Frame';
@@ -148,6 +149,11 @@ export function Simple({ app, onSwap }: { app: AppState; onSwap: () => void }) {
     setBusy(true);
     setError('');
     try {
+      //the notice before the first swap, once
+      if (!termsAccepted()) {
+        app.openDialog('terms');
+        return;
+      }
       askToNotify();
       await app.desk.takeOffer(match.o, nexusAccount!);
       onSwap();
@@ -377,6 +383,11 @@ function OwnOffer({ app, dir, coin, amount, route, candidates, market, usd }: { 
     setMsg(null);
     setPostedId(null);
     try {
+      //the notice before the first swap, once
+      if (!termsAccepted()) {
+        app.openDialog('terms');
+        return;
+      }
       askToNotify();
       const mine = await app.desk.postOffer({
         nexusAccount: acct!.address,

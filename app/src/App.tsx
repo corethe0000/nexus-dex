@@ -19,7 +19,7 @@ import { Trade } from './ui/Trade';
 const Swaps = lazy(() => import('./ui/Swaps').then((m) => ({ default: m.Swaps })));
 const Help = lazy(() => import('./ui/Help').then((m) => ({ default: m.Help })));
 
-export type Dialog = 'nexus' | 'evm' | null;
+export type Dialog = 'nexus' | 'evm' | 'terms' | null;
 
 export interface AppState {
   site: SiteConfig;

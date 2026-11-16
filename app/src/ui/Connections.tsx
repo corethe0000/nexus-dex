@@ -9,6 +9,7 @@ import QRCode from 'qrcode';
 import { connectWalletConnect, disconnectWalletConnect, restoreWalletConnect, walletConnectId } from '../lib/walletconnect';
 import { useT } from '../lib/i18n';
 import { inWallet } from '../lib/module';
+import { acceptTerms } from '../lib/terms';
 
 function useDialog(open: boolean) {
   const ref = useRef<HTMLDialogElement>(null);
@@ -91,6 +92,7 @@ export function Connections({ app }: { app: AppState }) {
       </button>
       <NexusDialog app={app} open={which === 'nexus'} onClose={() => setWhich(null)} />
       <WalletDialog app={app} wallets={wallets} open={which === 'evm'} onClose={() => setWhich(null)} />
+      <TermsDialog open={which === 'terms'} onClose={() => setWhich(null)} />
     </div>
   );
 }
@@ -489,6 +491,43 @@ function WalletDialog({ app, wallets, open, onClose }: { app: AppState; wallets:
         )}
         <button className="btn quiet" onClick={onClose}>
           {tx.conClose}
+        </button>
+      </div>
+    </dialog>
+  );
+}
+
+//the notice before the first swap (lib/terms.ts): the swap buttons open it until the user agreed once
+function TermsDialog({ open, onClose }: { open: boolean; onClose: () => void }) {
+  const { t } = useT();
+  const ref = useDialog(open);
+  const [agreed, setAgreed] = useState(false);
+  return (
+    <dialog ref={ref} onClose={onClose} aria-labelledby="terms-title">
+      <h2 id="terms-title">{t.termsTitle}</h2>
+      <p>{t.termsIntro}</p>
+      <ul className="terms">
+        <li>{t.termsP1}</li>
+        <li>{t.termsP2}</li>
+        <li>{t.termsP3}</li>
+        <li>{t.termsP4}</li>
+      </ul>
+      <label className="check">
+        <input type="checkbox" checked={agreed} onChange={(e) => setAgreed(e.target.checked)} /> {t.termsAgree}
+      </label>
+      <div className="row">
+        <button className="btn quiet" onClick={onClose}>
+          {t.conClose}
+        </button>
+        <button
+          className="btn"
+          disabled={!agreed}
+          onClick={() => {
+            acceptTerms();
+            onClose();
+          }}
+        >
+          {t.termsContinue}
         </button>
       </div>
     </dialog>

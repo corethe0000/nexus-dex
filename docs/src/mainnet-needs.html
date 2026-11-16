@@ -37,7 +37,7 @@
         <tr><td>Desktop wallet module</td><td>Public repository, Nexus repository verification</td><td>none</td><td><span class="tag good">built, tested in dev mode</span></td></tr>
         <tr><td>WalletConnect project id</td><td>Free account at reown.com, for paying from phone wallets</td><td>free tier</td><td><span class="tag good">works on testnet</span></td></tr>
         <tr><td>Outside audit of the contract</td><td>About 450 lines of Solidity</td><td>quote needed</td><td><span class="tag warn">recommended</span></td></tr>
-        <tr><td>Launch settings</td><td>Chains, tokens, largest swap, confirmations per chain</td><td>none</td><td><span class="tag">to decide</span></td></tr>
+        <tr><td>Launch settings</td><td>Chains, tokens, largest swap (confirmations per chain are proposed)</td><td>none</td><td><span class="tag">to decide</span></td></tr>
         <tr><td>Liquidity at launch</td><td>A few makers with NXS and stablecoins (the maker program can run offers)</td><td>their own coins</td><td><span class="tag">to arrange</span></td></tr>
       </table>
       <p class="muted">The DEX itself takes no fees and holds no coins. The running costs are hosting and the gas the helpers spend for users. Users pay their own network fees, and a one-time 1 NXS on Nexus to create their reveal register (it lets the profile publish a swap secret).</p>
@@ -113,12 +113,9 @@
       <table>
         <tr><th style="width: 30%">Item</th><th>Why it matters</th></tr>
         <tr><td>Outside audit of NexusSwap</td><td>The contract holds the EVM side of every swap. Small and simple, so a short audit.</td></tr>
-        <tr><td>Confirmations and finality per chain</td><td>Decided at the deploy (section 5); the code takes them from the config.</td></tr>
-        <tr><td>Relay abuse limits</td><td>Someone could reserve offers with takes they never lock, or post offers under another maker's agent address. No coins at risk, but offers can be blocked for a while; stronger limits are planned.</td></tr>
-        <tr><td>One runner per Nexus profile</td><td>Running the maker program and a browser page on the same profile at the same time makes their claims collide. Documented, and a check is planned.</td></tr>
-        <tr><td>Refund to another address on the swap card</td><td>The contract has refundTo; the page button still has to be added (claim to another address is already there).</td></tr>
-        <tr><td>Terms of use and a risk notice</td><td>Short page on the site before the first swap: what the DEX does and does not do.</td></tr>
+        <tr><td>An independent keeper on mainnet</td><td>A second helper next to the relay, ideally run by someone else, so a closed page still gets its swap finished when the relay is down (section 3).</td></tr>
       </table>
+      <div class="box green">Done since the first version of this document (16 November 2026): confirmations per chain settled (section 5), limits on the relay against takes that never lock and against borrowed agent keys, two programs on one Nexus profile no longer collide, "Refund to another address" on the swap card, and a notice before the first swap. Each with its tests.</div>
 
       <h2>8. A careful launch</h2>
       <ol>

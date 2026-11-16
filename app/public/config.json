@@ -3,22 +3,51 @@
     "mainnet": {
       "nexusNetwork": "Nexus mainnet",
       "evmRpc": {
+        "1": "https://ethereum-rpc.publicnode.com",
         "56": "https://bsc-rpc.publicnode.com",
-        "137": "https://polygon-bor-rpc.publicnode.com"
+        "137": "https://polygon-bor-rpc.publicnode.com",
+        "8453": "https://base-rpc.publicnode.com",
+        "42161": "https://arbitrum-one-rpc.publicnode.com"
       },
       "explorers": {
+        "1": "https://etherscan.io",
         "56": "https://bscscan.com",
-        "137": "https://polygonscan.com"
+        "137": "https://polygonscan.com",
+        "8453": "https://basescan.org",
+        "42161": "https://arbiscan.io"
       },
       "nexusExplorer": "https://explorer.nexus.io",
       "swapContracts": {},
       "timing": "default",
       "minConfirmations": {
+        "1": 12,
         "56": 15,
         "137": 64,
+        "8453": 30,
+        "42161": 240,
         "nexus": 2
       },
       "tokens": {
+        "1": [
+          {
+            "address": "0xdAC17F958D2ee523a2206206994597C13D831ec7",
+            "symbol": "USDT",
+            "decimals": 6,
+            "usd": 1
+          },
+          {
+            "address": "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48",
+            "symbol": "USDC",
+            "decimals": 6,
+            "usd": 1
+          },
+          {
+            "address": "0x0000000000000000000000000000000000000000",
+            "symbol": "ETH",
+            "decimals": 18,
+            "usd": "ethereum"
+          }
+        ],
         "56": [
           {
             "address": "0x55d398326f99059fF775485246999027B3197955",
@@ -57,6 +86,46 @@
             "symbol": "POL",
             "decimals": 18,
             "usd": "polygon-ecosystem-token"
+          }
+        ],
+        "8453": [
+          {
+            "address": "0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913",
+            "symbol": "USDC",
+            "decimals": 6,
+            "usd": 1
+          },
+          {
+            "address": "0xfde4C96c8593536E31F229EA8f37b2ADa2699bb2",
+            "symbol": "USDT",
+            "decimals": 6,
+            "usd": 1
+          },
+          {
+            "address": "0x0000000000000000000000000000000000000000",
+            "symbol": "ETH",
+            "decimals": 18,
+            "usd": "ethereum"
+          }
+        ],
+        "42161": [
+          {
+            "address": "0xFd086bC7CD5C481DCC9C85ebE478A1C0b69FCbb9",
+            "symbol": "USDT",
+            "decimals": 6,
+            "usd": 1
+          },
+          {
+            "address": "0xaf88d065e77c8cC2239327C5EDb3A432268e5831",
+            "symbol": "USDC",
+            "decimals": 6,
+            "usd": 1
+          },
+          {
+            "address": "0x0000000000000000000000000000000000000000",
+            "symbol": "ETH",
+            "decimals": 18,
+            "usd": "ethereum"
           }
         ]
       }

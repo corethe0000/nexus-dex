@@ -21,4 +21,16 @@ describe('reveal slot gate', () => {
     expect(g.acquire('bob', 'B', 1000, 600)).toBe(false);
     expect(g.acquire('bob', 'B', 1101, 600)).toBe(true);
   });
+  it('remembers when a swap here let the slot go (its value then stays in the slot)', () => {
+    const g = new SlotGate();
+    expect(g.releasedRecently('bob', 0, 600)).toBe(false);
+    g.acquire('bob', 'A', 0, 600);
+    g.release('bob', 'B', 50); //not the holder: nothing changes
+    expect(g.releasedRecently('bob', 60, 600)).toBe(false);
+    g.release('bob', 'A', 100);
+    expect(g.releasedRecently('bob', 200, 600)).toBe(true);
+    expect(g.releasedRecently('bob', 800, 600)).toBe(false);
+    expect(g.releasedRecently('alice', 200, 600)).toBe(false);
+    expect(g.holder('bob')).toBe(undefined);
+  });
 });
