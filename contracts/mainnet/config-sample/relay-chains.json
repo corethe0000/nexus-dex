@@ -1,0 +1,147 @@
+{
+  "1": {
+    "name": "Ethereum",
+    "rpc": "https://ethereum-rpc.publicnode.com",
+    "swap": "0xb1e2eb83cffb41df240c74ce66b36fbd79841346",
+    "fromBlock": "26426423",
+    "confirmations": 12,
+    "finalDelay": 780,
+    "tokens": [
+      {
+        "address": "0xdAC17F958D2ee523a2206206994597C13D831ec7",
+        "symbol": "USDT",
+        "decimals": 6,
+        "usd": 1
+      },
+      {
+        "address": "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48",
+        "symbol": "USDC",
+        "decimals": 6,
+        "usd": 1
+      },
+      {
+        "address": "0x0000000000000000000000000000000000000000",
+        "symbol": "ETH",
+        "decimals": 18,
+        "usd": "ethereum"
+      }
+    ],
+    "watcherKeyFile": "<file with the watcher key for this chain>"
+  },
+  "56": {
+    "name": "BNB Smart Chain",
+    "rpc": "https://bsc-rpc.publicnode.com",
+    "swap": "0xba4a97ace5c564e4bdbc8762064ccf329022ebe7",
+    "fromBlock": "133896454",
+    "confirmations": 15,
+    "finalDelay": 15,
+    "tokens": [
+      {
+        "address": "0x55d398326f99059fF775485246999027B3197955",
+        "symbol": "USDT",
+        "decimals": 18,
+        "usd": 1
+      },
+      {
+        "address": "0x8AC76a51cc950d9822D68b83fE1Ad97B32Cd580d",
+        "symbol": "USDC",
+        "decimals": 18,
+        "usd": 1
+      },
+      {
+        "address": "0x0000000000000000000000000000000000000000",
+        "symbol": "BNB",
+        "decimals": 18,
+        "usd": "binancecoin"
+      }
+    ],
+    "watcherKeyFile": "<file with the watcher key for this chain>"
+  },
+  "137": {
+    "name": "Polygon",
+    "rpc": "https://polygon-bor-rpc.publicnode.com",
+    "swap": "0xb87f7b8d3bb6e12d14e254088657d96a68692eff",
+    "fromBlock": "97408417",
+    "confirmations": 64,
+    "finalDelay": 120,
+    "tokens": [
+      {
+        "address": "0xc2132D05D31c914a87C6611C10748AEb04B58e8F",
+        "symbol": "USDT",
+        "decimals": 6,
+        "usd": 1
+      },
+      {
+        "address": "0x3c499c542cEF5E3811e1192ce70d8cC03d5c3359",
+        "symbol": "USDC",
+        "decimals": 6,
+        "usd": 1
+      },
+      {
+        "address": "0x0000000000000000000000000000000000000000",
+        "symbol": "POL",
+        "decimals": 18,
+        "usd": "polygon-ecosystem-token"
+      }
+    ],
+    "watcherKeyFile": "<file with the watcher key for this chain>"
+  },
+  "8453": {
+    "name": "Base",
+    "rpc": "https://base-rpc.publicnode.com",
+    "swap": "0x2ca6dd3dce426aca3c3fa2fd06baae85199f8654",
+    "fromBlock": "58138700",
+    "confirmations": 30,
+    "finalDelay": 60,
+    "tokens": [
+      {
+        "address": "0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913",
+        "symbol": "USDC",
+        "decimals": 6,
+        "usd": 1
+      },
+      {
+        "address": "0xfde4C96c8593536E31F229EA8f37b2ADa2699bb2",
+        "symbol": "USDT",
+        "decimals": 6,
+        "usd": 1
+      },
+      {
+        "address": "0x0000000000000000000000000000000000000000",
+        "symbol": "ETH",
+        "decimals": 18,
+        "usd": "ethereum"
+      }
+    ],
+    "watcherKeyFile": "<file with the watcher key for this chain>"
+  },
+  "42161": {
+    "name": "Arbitrum One",
+    "rpc": "https://arbitrum-one-rpc.publicnode.com",
+    "swap": "0x40ec018cda28e11c3bff23487dce6102459a25b9",
+    "fromBlock": "524697423",
+    "confirmations": 240,
+    "finalDelay": 60,
+    "tokens": [
+      {
+        "address": "0xFd086bC7CD5C481DCC9C85ebE478A1C0b69FCbb9",
+        "symbol": "USDT",
+        "decimals": 6,
+        "usd": 1
+      },
+      {
+        "address": "0xaf88d065e77c8cC2239327C5EDb3A432268e5831",
+        "symbol": "USDC",
+        "decimals": 6,
+        "usd": 1
+      },
+      {
+        "address": "0x0000000000000000000000000000000000000000",
+        "symbol": "ETH",
+        "decimals": 18,
+        "usd": "ethereum"
+      }
+    ],
+    "watcherKeyFile": "<file with the watcher key for this chain>"
+  }
+}

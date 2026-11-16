@@ -1,0 +1,4 @@
+node_modules/
+*.log
+module/dist/
+docs/.chrome-profile/

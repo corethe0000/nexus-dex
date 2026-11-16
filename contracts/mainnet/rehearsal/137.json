@@ -1,0 +1,17 @@
+{
+  "chainId": 137,
+  "chain": "Polygon",
+  "swap": "0xb87f7b8d3bb6e12d14e254088657d96a68692eff",
+  "fromBlock": 97408417,
+  "tx": "0x2631b53c3a89560b989f74f92ead01230cd1b36d592293528a360f7face2ca9d",
+  "deployer": "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266",
+  "codeHash": "0x942e52b3137a2c75fd984725ac2ce7ef27e975e8380b93a9ff11e0ba23c5adc9",
+  "gasUsed": 1874239,
+  "compiler": {
+    "solc": "0.8.28",
+    "optimizer": true,
+    "runs": 200
+  },
+  "explorer": "https://polygonscan.com/address/0xb87f7b8d3bb6e12d14e254088657d96a68692eff",
+  "at": "2026-11-16T08:35:01.676Z"
+}

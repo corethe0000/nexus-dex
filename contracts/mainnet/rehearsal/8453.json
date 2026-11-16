@@ -1,0 +1,17 @@
+{
+  "chainId": 8453,
+  "chain": "Base",
+  "swap": "0x2ca6dd3dce426aca3c3fa2fd06baae85199f8654",
+  "fromBlock": 58138700,
+  "tx": "0xa825906e905ffc0412303a7b7f5fb31ed965cd772830e2bb31b92421faa25462",
+  "deployer": "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266",
+  "codeHash": "0x942e52b3137a2c75fd984725ac2ce7ef27e975e8380b93a9ff11e0ba23c5adc9",
+  "gasUsed": 1874239,
+  "compiler": {
+    "solc": "0.8.28",
+    "optimizer": true,
+    "runs": 200
+  },
+  "explorer": "https://basescan.org/address/0x2ca6dd3dce426aca3c3fa2fd06baae85199f8654",
+  "at": "2026-11-16T08:35:25.979Z"
+}

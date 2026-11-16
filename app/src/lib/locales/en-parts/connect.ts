@@ -1,0 +1,102 @@
+//English texts: sign-in and wallet buttons and dialogs, wallet and profile errors (ui/Connections.tsx, lib/nexus.ts, lib/evm.ts, lib/walletconnect.ts, lib/extension.ts)
+import type { Plural } from '../en';
+
+export const connect = {
+  //Connections: the two buttons in the header
+  conChipNexus: 'Nexus: {name}',
+  conSignInNexus: 'Sign in to Nexus',
+  conNotNeeded: 'Not needed for Nexus tokens: they trade with your Nexus sign-in only',
+  conChipWallet: '{address} on {chain}',
+  conChipReceive: 'Receive to {address}',
+  conConnectWallet: 'Connect wallet',
+  //a chain the site does not know by name
+  conChainId: 'chain {id}',
+  //NexusDialog
+  conBusyChecking: 'Checking your profile...',
+  conBusyWaitWallet: 'Waiting for the Nexus Wallet...',
+  conBusyReading: 'Reading your accounts...',
+  conBusyApproveSetup: 'Approve "set up swaps" in the Nexus Wallet window (unlock it first if it asks)...',
+  conBusySettingUp: 'Setting up swaps on Nexus. This takes one block, about a minute...',
+  conNexusTitle: 'Your Nexus profile',
+  conSetupNeeded: 'Before your first swap, your profile needs a small swap register on Nexus (one transaction). It lets the swap release coins to you.',
+  conSetupNeededFee: 'Before your first swap, your profile needs a small swap register on Nexus (one transaction, 1 NXS). It lets the swap release coins to you.',
+  conSetUp: 'Set up swaps',
+  conSignOut: 'Sign out',
+  conClose: 'Close',
+  conExtensionFound: 'The Nexus Wallet is in this browser: sign in with it and this site never sees your password or PIN.',
+  conUseExtension: 'Use the Nexus Wallet',
+  conOrSignInHere: 'Or sign in here:',
+  conSignedHereNote: 'Your transactions are signed in this page. Username, password and PIN are never stored or sent anywhere.',
+  conUsername: 'Username',
+  conPassword: 'Password',
+  conPin: 'PIN',
+  conCancel: 'Cancel',
+  conSignIn: 'Sign in',
+  //Profile
+  conViaExtension: 'Signed in through the Nexus Wallet',
+  conViaPage: 'Signed in on this page',
+  conProfileId: 'Profile id',
+  conCopied: 'Copied',
+  conCopy: 'Copy',
+  conSwaps: 'Swaps',
+  conSwapsReady: 'Ready',
+  conSwapsReadyRunning: { one: 'Ready, {n} running', other: 'Ready, {n} running' } as Plural,
+  conSwapsNotSetUp: 'Not set up yet',
+  conAccounts: 'Accounts',
+  conRefresh: 'Refresh',
+  conNoAccounts: 'No accounts yet. Make one in your Nexus wallet to hold NXS or tokens.',
+  conAllEmpty: 'All accounts are empty.',
+  //an account without a name
+  conAccountUnnamed: 'account',
+  conHideEmpty: 'Hide empty accounts',
+  conShowEmpty: { one: 'Show {n} empty account', other: 'Show {n} empty accounts' } as Plural,
+  conNoteExtension: 'Every Nexus step of a swap opens the wallet and asks for your PIN, so stay at this page while a swap runs.',
+  conNotePage: 'Your password and PIN stay in this page until you reload it; they are never stored or sent.',
+  //EvmSummary: the avatar letter, W for a wallet, R for a receive-only address
+  conAvatarWallet: 'W',
+  conAvatarReceive: 'R',
+  conReceiveOnly: 'Receive only: payments go to this address',
+  conTokenOn: '{symbol} on {chain}',
+  //WalletDialog
+  conPhoneNoConnect: 'The phone wallet did not connect.',
+  conWalletTitle: 'Your wallet',
+  conConnectTitle: 'Connect a wallet',
+  conPickAnother: 'To use another wallet or address, pick it below.',
+  //symbols: "USDT or USDC", chains: "BNB Smart Chain and Polygon"
+  conWalletFor: 'For {symbols} on {chains}. The wallet asks you before every signature.',
+  conNoWallet: 'No wallet found in this browser. To pay with a token on another chain, install MetaMask or Binance Wallet and reload the page. To only sell Nexus coins, an address is enough (below).',
+  conNoWalletIn: "Inside the Nexus wallet there is no browser wallet such as MetaMask. To pay with a token on another chain, connect a phone wallet with WalletConnect if it is offered, or use the Nexus DEX website. To only sell Nexus coins, an address is enough (below).",
+  conScanCode: 'Scan this code with the wallet app on your phone (MetaMask, Trust, Binance Wallet and most others), then approve the connection there.',
+  conQrAlt: 'QR code to connect a phone wallet',
+  conOpenWalletApp: 'Open the wallet app',
+  conCopyLink: 'Copy link',
+  conStartingWc: 'Starting WalletConnect...',
+  conPhoneWallet: 'Phone wallet (WalletConnect)',
+  conPhoneWalletHint: 'Scan a QR code with MetaMask, Trust or Binance Wallet on your phone',
+  conOnlySelling: 'Only selling Nexus coins?',
+  conReceiveText:
+    'Enter the address that should get the {symbols} (on {chains}), for example from Trust Wallet or Binance Wallet. You need no wallet here and no gas coins: the Nexus DEX service collects the payment for you, and the swap contract can pay only this address. Use an address you own, not an exchange deposit address.',
+  conReceivingAddress: 'Your receiving address',
+  conReceiveHere: 'Receive to this address',
+  conDisconnect: 'Disconnect',
+  //nexus.ts
+  conSetupCost: 'Setting up swaps costs 1 NXS once. Put 1 NXS in one of your NXS accounts first.',
+  //evm.ts: the name of a wallet that does not announce itself
+  conBrowserWallet: 'Browser wallet',
+  conNotEvmAddress: 'That is not an EVM address (0x and 40 hex characters).',
+  conNoAddress: 'The wallet gave no address',
+  conOtherAccount: 'The wallet switched to account {address}; connect {expected} to carry on.',
+  conNeedsSigner: 'This needs a wallet that signs (MetaMask or another); the address you typed in only receives.',
+  //walletconnect.ts: shown in the phone wallet when it connects
+  conWcDescription: 'Swap NXS with coins on other chains, peer to peer',
+  //extension.ts: Nexus Wallet errors
+  conExtRejected: 'You rejected the step in the wallet.',
+  conExtNotConnected: 'The site is not connected to the wallet any more. Sign in with the wallet again.',
+  conExtCoreLogin: 'The wallet signs through a core login. Swaps need the wallet to sign in this browser (wallet settings).',
+  conExtLocked: 'The wallet is locked or logged out.',
+  conExtBusy: 'The wallet window is already open: finish or close it first.',
+  conExtCollect: 'Open your Nexus Wallet and collect the payment there: it lists every payment waiting for you.',
+  conExtNotFound: 'The Nexus Wallet extension was not found in this browser.',
+  //wallet and site: mainnet, testnet or private
+  conExtWrongNet: "The wallet is on {wallet}, this site on {site}. Switch the wallet's core first.",
+} satisfies Record<string, string | Plural>;

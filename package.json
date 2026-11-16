@@ -1,0 +1,6 @@
+{
+  "name": "nexus-dex",
+  "private": true,
+  "license": "MIT",
+  "workspaces": ["core", "service", "app"]
+}

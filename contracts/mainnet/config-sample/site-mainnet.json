@@ -1,0 +1,133 @@
+{
+  "evmRpc": {
+    "1": "https://ethereum-rpc.publicnode.com",
+    "56": "https://bsc-rpc.publicnode.com",
+    "137": "https://polygon-bor-rpc.publicnode.com",
+    "8453": "https://base-rpc.publicnode.com",
+    "42161": "https://arbitrum-one-rpc.publicnode.com"
+  },
+  "explorers": {
+    "1": "https://etherscan.io",
+    "56": "https://bscscan.com",
+    "137": "https://polygonscan.com",
+    "8453": "https://basescan.org",
+    "42161": "https://arbiscan.io"
+  },
+  "swapContracts": {
+    "1": "0xb1e2eb83cffb41df240c74ce66b36fbd79841346",
+    "56": "0xba4a97ace5c564e4bdbc8762064ccf329022ebe7",
+    "137": "0xb87f7b8d3bb6e12d14e254088657d96a68692eff",
+    "8453": "0x2ca6dd3dce426aca3c3fa2fd06baae85199f8654",
+    "42161": "0x40ec018cda28e11c3bff23487dce6102459a25b9"
+  },
+  "minConfirmations": {
+    "1": 12,
+    "56": 15,
+    "137": 64,
+    "8453": 30,
+    "42161": 240,
+    "nexus": 2
+  },
+  "tokens": {
+    "1": [
+      {
+        "address": "0xdAC17F958D2ee523a2206206994597C13D831ec7",
+        "symbol": "USDT",
+        "decimals": 6,
+        "usd": 1
+      },
+      {
+        "address": "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48",
+        "symbol": "USDC",
+        "decimals": 6,
+        "usd": 1
+      },
+      {
+        "address": "0x0000000000000000000000000000000000000000",
+        "symbol": "ETH",
+        "decimals": 18,
+        "usd": "ethereum"
+      }
+    ],
+    "56": [
+      {
+        "address": "0x55d398326f99059fF775485246999027B3197955",
+        "symbol": "USDT",
+        "decimals": 18,
+        "usd": 1
+      },
+      {
+        "address": "0x8AC76a51cc950d9822D68b83fE1Ad97B32Cd580d",
+        "symbol": "USDC",
+        "decimals": 18,
+        "usd": 1
+      },
+      {
+        "address": "0x0000000000000000000000000000000000000000",
+        "symbol": "BNB",
+        "decimals": 18,
+        "usd": "binancecoin"
+      }
+    ],
+    "137": [
+      {
+        "address": "0xc2132D05D31c914a87C6611C10748AEb04B58e8F",
+        "symbol": "USDT",
+        "decimals": 6,
+        "usd": 1
+      },
+      {
+        "address": "0x3c499c542cEF5E3811e1192ce70d8cC03d5c3359",
+        "symbol": "USDC",
+        "decimals": 6,
+        "usd": 1
+      },
+      {
+        "address": "0x0000000000000000000000000000000000000000",
+        "symbol": "POL",
+        "decimals": 18,
+        "usd": "polygon-ecosystem-token"
+      }
+    ],
+    "8453": [
+      {
+        "address": "0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913",
+        "symbol": "USDC",
+        "decimals": 6,
+        "usd": 1
+      },
+      {
+        "address": "0xfde4C96c8593536E31F229EA8f37b2ADa2699bb2",
+        "symbol": "USDT",
+        "decimals": 6,
+        "usd": 1
+      },
+      {
+        "address": "0x0000000000000000000000000000000000000000",
+        "symbol": "ETH",
+        "decimals": 18,
+        "usd": "ethereum"
+      }
+    ],
+    "42161": [
+      {
+        "address": "0xFd086bC7CD5C481DCC9C85ebE478A1C0b69FCbb9",
+        "symbol": "USDT",
+        "decimals": 6,
+        "usd": 1
+      },
+      {
+        "address": "0xaf88d065e77c8cC2239327C5EDb3A432268e5831",
+        "symbol": "USDC",
+        "decimals": 6,
+        "usd": 1
+      },
+      {
+        "address": "0x0000000000000000000000000000000000000000",
+        "symbol": "ETH",
+        "decimals": 18,
+        "usd": "ethereum"
+      }
+    ]
+  }
+}

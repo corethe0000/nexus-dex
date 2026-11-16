@@ -1,0 +1,171 @@
+{
+  "networks": {
+    "mainnet": {
+      "nexusNetwork": "Nexus mainnet",
+      "evmRpc": {
+        "56": "https://bsc-rpc.publicnode.com",
+        "137": "https://polygon-bor-rpc.publicnode.com"
+      },
+      "explorers": {
+        "56": "https://bscscan.com",
+        "137": "https://polygonscan.com"
+      },
+      "nexusExplorer": "https://explorer.nexus.io",
+      "swapContracts": {},
+      "timing": "default",
+      "minConfirmations": {
+        "56": 15,
+        "137": 64,
+        "nexus": 2
+      },
+      "tokens": {
+        "56": [
+          {
+            "address": "0x55d398326f99059fF775485246999027B3197955",
+            "symbol": "USDT",
+            "decimals": 18,
+            "usd": 1
+          },
+          {
+            "address": "0x8AC76a51cc950d9822D68b83fE1Ad97B32Cd580d",
+            "symbol": "USDC",
+            "decimals": 18,
+            "usd": 1
+          },
+          {
+            "address": "0x0000000000000000000000000000000000000000",
+            "symbol": "BNB",
+            "decimals": 18,
+            "usd": "binancecoin"
+          }
+        ],
+        "137": [
+          {
+            "address": "0xc2132D05D31c914a87C6611C10748AEb04B58e8F",
+            "symbol": "USDT",
+            "decimals": 6,
+            "usd": 1
+          },
+          {
+            "address": "0x3c499c542cEF5E3811e1192ce70d8cC03d5c3359",
+            "symbol": "USDC",
+            "decimals": 6,
+            "usd": 1
+          },
+          {
+            "address": "0x0000000000000000000000000000000000000000",
+            "symbol": "POL",
+            "decimals": 18,
+            "usd": "polygon-ecosystem-token"
+          }
+        ]
+      }
+    },
+    "testnet": {
+      "relay": "/relay",
+      "nexusNode": "/nexus",
+      "nexusNetwork": "Private test chain",
+      "evmRpc": {
+        "97": "https://bsc-testnet-rpc.publicnode.com",
+        "31337": "/evm",
+        "11155111": "https://ethereum-sepolia-rpc.publicnode.com"
+      },
+      "walletRpc": {
+        "31337": "http://127.0.0.1:8545/evm"
+      },
+      "explorers": {
+        "97": "https://testnet.bscscan.com",
+        "11155111": "https://sepolia.etherscan.io"
+      },
+      "keepers": [
+        "/keeper"
+      ],
+      "nexusTokens": [
+        {
+          "token": "8D7zzHoiwKGxs8Tk8ApjintGincdwjaLRzMfssgsZpAczLEAhwx",
+          "ticker": "TESTT",
+          "decimals": 2
+        },
+        {
+          "token": "8ELc7WUKbZwXeLuAY4fKQBNrAAfCj5p49JrMYVZQZCq8QnCsCwW",
+          "ticker": "BOBT",
+          "decimals": 2
+        }
+      ],
+      "swapContracts": {
+        "97": "0x86948d0c9612d6fe2f44548c9aad1db53c2aa335",
+        "31337": "0x1e3b98102e19d3a164d239bdd190913c2f02e756",
+        "11155111": "0xddacddede45a337f487fd917d52e0570a24a15f9"
+      },
+      "timing": "test",
+      "minConfirmations": {
+        "97": 3,
+        "31337": 2,
+        "11155111": 3,
+        "nexus": 1
+      },
+      "tokens": {
+        "97": [
+          {
+            "address": "0xf7c200eaaf4413f88143804e02a7c3433289e831",
+            "symbol": "USDT",
+            "decimals": 6,
+            "usd": 1
+          },
+          {
+            "address": "0x0000000000000000000000000000000000000000",
+            "symbol": "tBNB",
+            "decimals": 18,
+            "usd": "binancecoin"
+          }
+        ],
+        "31337": [
+          {
+            "address": "0x9e545e3c0baab3e08cdfd552c960a1050f373042",
+            "symbol": "USDT",
+            "decimals": 6,
+            "usd": 1
+          },
+          {
+            "address": "0x8f86403a4de0bb5791fa46b8e795c547942fe4cf",
+            "symbol": "USDC",
+            "decimals": 6,
+            "usd": 1
+          },
+          {
+            "address": "0xcbeaf3bde82155f56486fb5a1072cb8baaf547cc",
+            "symbol": "TETH",
+            "decimals": 18,
+            "usd": "ethereum"
+          },
+          {
+            "address": "0x0000000000000000000000000000000000000000",
+            "symbol": "ETH",
+            "decimals": 18,
+            "usd": "ethereum"
+          }
+        ],
+        "11155111": [
+          {
+            "address": "0x67fc4dc4427462c304ba4804914c06db3a9b0fea",
+            "symbol": "USDT",
+            "decimals": 6,
+            "usd": 1
+          },
+          {
+            "address": "0xcc637ede12dcde97a174ee8bc5c108d08c0fedce",
+            "symbol": "USDC",
+            "decimals": 6,
+            "usd": 1
+          },
+          {
+            "address": "0x0000000000000000000000000000000000000000",
+            "symbol": "ETH",
+            "decimals": 18,
+            "usd": "ethereum"
+          }
+        ]
+      }
+    }
+  }
+}

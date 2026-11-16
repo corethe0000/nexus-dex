@@ -1,0 +1,297 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <title>Nexus DEX - Overview</title>
+    <link rel="stylesheet" href="style.css" />
+  </head>
+  <body class="slides">
+    <!-- 1 cover -->
+    <section class="slide dark">
+      <div class="brand" style="display: flex; align-items: center; gap: 10px; font-size: 14pt; font-weight: 700">
+        <svg viewBox="0 0 32 32" width="34" height="34">
+          <circle cx="12" cy="16" r="7.5" fill="none" stroke="#e6edf7" stroke-width="3" />
+          <circle cx="20" cy="16" r="7.5" fill="none" stroke="#3fc0ff" stroke-width="3" />
+          <path d="M 16.9 10.4 A 7.5 7.5 0 0 1 19.5 16" fill="none" stroke="#e6edf7" stroke-width="3" />
+        </svg>
+        Nexus DEX
+      </div>
+      <div class="cols" style="grid-template-columns: 1fr 1.25fr; gap: 26px; margin-top: 18mm; align-items: center">
+        <div>
+          <h1 style="font-size: 32pt">Swap NXS with stablecoins.<br />Peer to peer, no custody.</h1>
+          <p class="lede" style="font-size: 13pt">NXS and Nexus tokens against USDT, USDC, ETH, BNB and POL on BSC, Polygon, Ethereum, Arbitrum and Base, with atomic swaps. In the browser and inside the Nexus desktop wallet.</p>
+          <p class="muted" style="margin-top: 14mm; font-size: 10pt">Overview for the Nexus team<br />November 2026<br />Nexus &middot; impressions@nexus.io</p>
+        </div>
+        <img class="shot" src="../img/d01-simple-dark.png" style="border-color: rgba(255, 255, 255, 0.15); box-shadow: 0 10px 40px rgba(0, 0, 0, 0.45)" />
+      </div>
+    </section>
+
+    <!-- 2 why -->
+    <section class="slide">
+      <div class="kicker">Why</div>
+      <h1>NXS holders need a way to stablecoins that does not need anyone's trust</h1>
+      <div class="body cols" style="grid-template-columns: 1fr 1fr; gap: 22px; margin-top: 6px">
+        <div>
+          <h3>Today</h3>
+          <ul>
+            <li>Buying or selling NXS means a centralized exchange: an account, KYC, a deposit, a withdrawal fee, and trusting the exchange with the coins in between.</li>
+            <li>There is no wrapped NXS on EVM chains and no bridge, and both would add a custodian or a contract that holds everyone's coins.</li>
+            <li>Nexus tokens have no market at all outside the Nexus chain.</li>
+          </ul>
+        </div>
+        <div>
+          <h3>With Nexus DEX</h3>
+          <ul class="check">
+            <li>Two people swap directly: NXS on Nexus against USDT or USDC on an EVM chain.</li>
+            <li>Nobody holds the coins in between. Each side locks its own coins on its own chain; either both get paid or both get their coins back.</li>
+            <li>No wrapped tokens, no bridge, no pool to drain, no admin key, no fees taken by the DEX.</li>
+            <li>Works in any browser and as a module inside the Nexus desktop wallet.</li>
+            <li>A Nexus-only market for NXS and Nexus tokens is built in too.</li>
+          </ul>
+        </div>
+      </div>
+      <div class="foot"><span>Nexus DEX &middot; Overview</span><span>2</span></div>
+    </section>
+
+    <!-- 3 how a swap works -->
+    <section class="slide">
+      <div class="kicker">How it works</div>
+      <h1>An atomic swap in four steps</h1>
+      <p class="lede">The buyer makes a secret and locks first. Both locks open with the same secret, and only until their deadline.</p>
+      <div class="steps">
+        <div class="step ev"><div class="n">1</div><b>Taker locks</b>25 USDT in the NexusSwap contract on BSC, for the maker, with the hash of a secret only the taker knows. Deadline 24 h.</div>
+        <div class="step nx"><div class="n">2</div><b>Maker locks</b>1,000 NXS on Nexus with the same hash, for the taker. Its deadline ends at least 6 h before the taker's.</div>
+        <div class="step nx"><div class="n">3</div><b>Taker receives</b>the NXS by revealing the secret on Nexus. That is the only way to open the maker's lock.</div>
+        <div class="step ev"><div class="n">4</div><b>Maker receives</b>the USDT: the secret is now public, and it also opens the taker's lock on BSC.</div>
+      </div>
+      <div class="cols" style="grid-template-columns: 1.3fr 1fr; gap: 20px">
+        <svg viewBox="0 0 640 150" width="100%" style="max-height: 62mm">
+          <text x="0" y="26" font-size="13" font-weight="700" fill="#16233a">Taker lock (BSC)</text>
+          <rect x="150" y="12" width="460" height="22" rx="6" fill="#fdf3dc" stroke="#c58a00" />
+          <text x="604" y="28" font-size="11" text-anchor="end" fill="#c58a00" font-weight="700">refund after 24 h</text>
+          <text x="0" y="76" font-size="13" font-weight="700" fill="#16233a">Maker lock (Nexus)</text>
+          <rect x="180" y="62" width="230" height="22" rx="6" fill="#e3f3fd" stroke="#0a8fd8" />
+          <text x="404" y="78" font-size="11" text-anchor="end" fill="#0a8fd8" font-weight="700">refund after 12 h</text>
+          <line x1="410" y1="100" x2="610" y2="100" stroke="#1f8a4c" stroke-width="2" />
+          <line x1="410" y1="94" x2="410" y2="106" stroke="#1f8a4c" stroke-width="2" />
+          <line x1="610" y1="94" x2="610" y2="106" stroke="#1f8a4c" stroke-width="2" />
+          <text x="510" y="124" font-size="11" text-anchor="middle" fill="#1f8a4c" font-weight="700">at least 6 h for the maker to claim with the secret</text>
+          <line x1="150" y1="140" x2="610" y2="140" stroke="#d9e1ec" />
+          <text x="150" y="150" font-size="10" fill="#5a6b82">lock</text>
+          <text x="610" y="150" font-size="10" fill="#5a6b82" text-anchor="end">time</text>
+        </svg>
+        <div class="box blue">
+          <b>Why it cannot go half way</b>
+          <p style="margin-top: 4px">The taker can only take the NXS by publishing the secret, and the secret opens the USDT for the maker. If the taker never reveals it, both locks run out and both refund. The taker claims only until shortly before the maker's deadline, so the maker always has hours left to use the secret.</p>
+        </div>
+      </div>
+      <div class="foot"><span>Nexus DEX &middot; Overview</span><span>3</span></div>
+    </section>
+
+    <!-- 4 the site -->
+    <section class="slide">
+      <div class="kicker">The website</div>
+      <h1>Simple for most people</h1>
+      <div class="body cols" style="grid-template-columns: 1.55fr 1fr; gap: 20px">
+        <img class="shot" src="../img/d01-simple-light.png" />
+        <div>
+          <ul class="check">
+            <li>Pick what you pay and what you get; the page takes the best offer that fits.</li>
+            <li>Shows the market price, how far the offer is from it, and the network fee before anything is signed.</li>
+            <li>Nexus side: sign in with the Nexus profile (signed in the page, never sent), or the Nexus browser wallet.</li>
+            <li>EVM side: MetaMask, Binance Wallet, any injected wallet, or a phone wallet with WalletConnect.</li>
+            <li>Selling NXS needs no EVM wallet at all: a receiving address is enough, the service collects the payment for the seller.</li>
+            <li>Light and dark, phone layout, 12 languages.</li>
+          </ul>
+          <img class="shot" src="../img/d04-phone.png" style="width: 46%; margin-top: 4px" />
+        </div>
+      </div>
+      <div class="foot"><span>Nexus DEX &middot; Overview</span><span>4</span></div>
+    </section>
+
+    <!-- 5 advanced -->
+    <section class="slide">
+      <div class="kicker">The website</div>
+      <h1>A full market for traders</h1>
+      <div class="body cols" style="grid-template-columns: 1.55fr 1fr; gap: 20px">
+        <img class="shot" src="../img/d02b-book-dark.png" style="aspect-ratio: 1280 / 650; object-fit: cover; object-position: bottom" />
+        <div>
+          <ul class="check">
+            <li>Order book per coin and chain, depth chart, best prices and spread.</li>
+            <li>Take any offer whole, or post your own at your own price.</li>
+            <li>Ladders: split one offer into several at stepped prices.</li>
+            <li>Offers are re-posted on their own after a swap if wanted, and can be shared as a link.</li>
+            <li>Price history with the swaps made here, next to the CoinGecko market price.</li>
+            <li>A maker program runs offers around the clock from a server, with its own limits.</li>
+            <li>Nexus tokens market: NXS and Nexus tokens against each other, on the Nexus chain only.</li>
+          </ul>
+        </div>
+      </div>
+      <div class="foot"><span>Nexus DEX &middot; Overview</span><span>5</span></div>
+    </section>
+
+    <!-- 6 a swap -->
+    <section class="slide">
+      <div class="kicker">A real swap</div>
+      <h1>Every step on screen</h1>
+      <div class="body cols" style="grid-template-columns: 1fr 1fr; gap: 16px">
+        <div>
+          <img class="shot" src="../img/d06-swap-05.png" />
+          <p class="caption">Both sides locked; the taker's NXS claim is next. The page says where each coin is and when it comes back if the other side stops.</p>
+        </div>
+        <div>
+          <img class="shot" src="../img/d07-swapped.png" />
+          <p class="caption">Done: history with every transaction on both chains, linked to the explorers, and a CSV download.</p>
+        </div>
+      </div>
+      <div class="box green" style="margin-top: 0">This swap ran on the test setup in about one minute: 25 USDT on an EVM test chain for 0.04 of a Nexus test token. On mainnet the time is set by the confirmations each chain needs.</div>
+      <div class="foot"><span>Nexus DEX &middot; Overview</span><span>6</span></div>
+    </section>
+
+    <!-- 7 desktop wallet -->
+    <section class="slide">
+      <div class="kicker">Inside the Nexus desktop wallet</div>
+      <h1>The same DEX as a wallet module</h1>
+      <div class="body cols" style="grid-template-columns: 1.5fr 1fr; gap: 18px">
+        <div>
+          <img class="shot wallet-top" src="../img/w02-ticket-dark.png" />
+          <p class="caption">Nexus Wallet 3.1.5 with the DEX module (developer mode), on the private test chain.</p>
+        </div>
+        <div>
+          <ul class="check">
+            <li>Opens from the wallet's bottom bar like the built-in pages.</li>
+            <li>Talks to Nexus through the wallet's own core: no Nexus node to host for module users.</li>
+            <li>Follows the wallet's network (a test core shows the testnet) and starts in dark theme.</li>
+            <li>Selling NXS works with just a receiving address; paying with USDT needs a phone wallet over WalletConnect.</li>
+            <li>Tested on 2026-11-16: two real swaps sold from inside the wallet, both Swapped, the exact amounts arrived (0.02 and 30.5 USDT).</li>
+          </ul>
+          <img class="shot wallet-top" src="../img/w05-swap-running.png" />
+        </div>
+      </div>
+      <div class="foot"><span>Nexus DEX &middot; Overview</span><span>7</span></div>
+    </section>
+
+    <!-- 8 safety -->
+    <section class="slide">
+      <div class="kicker">Safety</div>
+      <h1>What can go wrong, and what happens then</h1>
+      <table style="font-size: 9.4pt">
+        <tr><th style="width: 32%">If</th><th>Then</th></tr>
+        <tr><td>The other side never locks</td><td>Your lock runs out and you refund it. The page does it, or the service, or an independent keeper.</td></tr>
+        <tr><td>You close the page in the middle</td><td>The relay's watcher finishes your EVM side (claim or refund); open the page again and it carries on.</td></tr>
+        <tr><td>Your receiving address is frozen by USDT or USDC</td><td>Have it paid to another address of yours (claimTo for a payment, refundTo for a refund).</td></tr>
+        <tr><td>A chain reorganizes</td><td>Nothing is answered before the other lock has the confirmations set per chain.</td></tr>
+        <tr><td>A Nexus node lies about a lock</td><td>The page and the maker program ask other Nexus nodes (witnesses) before locking EVM coins.</td></tr>
+        <tr><td>A token takes a fee on transfer</td><td>The contract refuses the lock: it would hold less than both sides agreed on.</td></tr>
+        <tr><td>The service goes away</td><td>Running swaps still finish or refund: locks open only with the secret or after the deadline, and anyone can send the refund.</td></tr>
+        <tr><td>Someone tries to redirect coins</td><td>Impossible: a claim always pays the recipient written in the lock, a refund always pays the sender.</td></tr>
+      </table>
+      <p class="muted">Internal security reviews with separate reviewers per part (contract, swap engine, site, relay, keeper, maker program), each finding checked against the code and fixed or tracked. An outside audit of the contract is recommended before mainnet.</p>
+      <div class="foot"><span>Nexus DEX &middot; Overview</span><span>8</span></div>
+    </section>
+
+    <!-- 9 architecture -->
+    <section class="slide">
+      <div class="kicker">Architecture</div>
+      <h1>Small parts, none of them holds coins</h1>
+      <div class="body cols" style="grid-template-columns: 1.35fr 1fr; gap: 20px">
+        <svg viewBox="0 0 620 330" width="100%">
+          <defs>
+            <marker id="a" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#5a6b82" /></marker>
+          </defs>
+          <rect x="10" y="10" width="250" height="74" rx="12" fill="#e3f3fd" stroke="#0a8fd8" />
+          <text x="135" y="40" text-anchor="middle" font-size="15" font-weight="800" fill="#0b1a2e">Website or wallet module</text>
+          <text x="135" y="62" text-anchor="middle" font-size="11.5" fill="#5a6b82">signs both sides, keeps the swap</text>
+          <rect x="360" y="10" width="250" height="74" rx="12" fill="#f2f6fb" stroke="#5a6b82" />
+          <text x="485" y="40" text-anchor="middle" font-size="15" font-weight="800" fill="#0b1a2e">Relay</text>
+          <text x="485" y="62" text-anchor="middle" font-size="11.5" fill="#5a6b82">order book + watcher</text>
+          <rect x="360" y="128" width="250" height="60" rx="12" fill="#f2f6fb" stroke="#5a6b82" stroke-dasharray="5 4" />
+          <text x="485" y="155" text-anchor="middle" font-size="15" font-weight="800" fill="#0b1a2e">Keepers</text>
+          <text x="485" y="175" text-anchor="middle" font-size="11.5" fill="#5a6b82">independent, anyone can run one</text>
+          <rect x="10" y="238" width="250" height="80" rx="12" fill="#e3f3fd" stroke="#0a8fd8" />
+          <text x="135" y="268" text-anchor="middle" font-size="15" font-weight="800" fill="#0b1a2e">Nexus chain</text>
+          <text x="135" y="290" text-anchor="middle" font-size="11.5" fill="#5a6b82">hash-locked DEBIT + reveal slot</text>
+          <rect x="360" y="238" width="250" height="80" rx="12" fill="#fdf3dc" stroke="#c58a00" />
+          <text x="485" y="268" text-anchor="middle" font-size="15" font-weight="800" fill="#0b1a2e">NexusSwap contract</text>
+          <text x="485" y="290" text-anchor="middle" font-size="11.5" fill="#5a6b82">BSC, Polygon, Ethereum, Arbitrum, Base</text>
+          <line x1="262" y1="47" x2="356" y2="47" stroke="#5a6b82" stroke-width="2" marker-end="url(#a)" marker-start="url(#a)" />
+          <text x="309" y="40" text-anchor="middle" font-size="10.5" fill="#5a6b82">offers</text>
+          <line x1="135" y1="86" x2="135" y2="234" stroke="#0a8fd8" stroke-width="2" marker-end="url(#a)" />
+          <line x1="230" y1="86" x2="385" y2="234" stroke="#c58a00" stroke-width="2" marker-end="url(#a)" />
+          <line x1="485" y1="86" x2="485" y2="124" stroke="#5a6b82" stroke-width="2" marker-end="url(#a)" />
+          <line x1="540" y1="190" x2="540" y2="234" stroke="#5a6b82" stroke-width="2" marker-end="url(#a)" />
+          <text x="196" y="200" font-size="10.5" fill="#5a6b82">locks, claims, refunds</text>
+        </svg>
+        <div>
+          <ul>
+            <li><b>NexusSwap</b>: one small contract per EVM chain. No owner, no fees, no upgrade path, 30 days longest lock.</li>
+            <li><b>Nexus side</b>: plain Tritium operations with a condition that checks the SK256 hash, the same hash the contract checks.</li>
+            <li><b>Relay</b>: lists offers and matches takes. Its watcher collects for sellers who only gave an address, and refunds what is left.</li>
+            <li><b>Keepers</b>: a second, independent helper for collects and refunds, sharing nothing with the relay.</li>
+            <li><b>Maker program</b>: keeps offers up from a server.</li>
+          </ul>
+          <p class="muted">TypeScript throughout (React site, Node services), Solidity 0.8.28 with Foundry.</p>
+        </div>
+      </div>
+      <div class="foot"><span>Nexus DEX &middot; Overview</span><span>9</span></div>
+    </section>
+
+    <!-- 10 status -->
+    <section class="slide">
+      <div class="kicker">Status</div>
+      <h1>Working end to end on testnets</h1>
+      <div class="kpi">
+        <div><b>5 mainnets</b><span>contract tested on a fork of each with the real USDT and USDC</span></div>
+        <div><b>2 public testnets</b><span>Sepolia and BSC testnet, real swaps from the website</span></div>
+        <div><b>Desktop wallet</b><span>module tested in Nexus Wallet 3.1.5, real swaps</span></div>
+        <div><b>12 languages</b><span>English, German, Spanish, Filipino, French, Croatian and six more</span></div>
+      </div>
+      <div class="cols" style="grid-template-columns: 1fr 1fr; gap: 20px">
+        <div>
+          <h3>Tested</h3>
+          <ul class="check">
+            <li>Contract unit tests (Foundry) and fork tests on Ethereum, BSC, Polygon, Arbitrum and Base.</li>
+            <li>Swap engine unit tests for every path: happy path, either side stopping, deadlines, clocks.</li>
+            <li>End-to-end swaps on a private Nexus chain with local EVM chains, both directions, refunds, the watcher and the keeper, a page closed in the middle.</li>
+            <li>Browser tests of the site: simple, advanced, phone, all languages, receive-only selling, the maker program, claim to another address.</li>
+          </ul>
+        </div>
+        <div>
+          <h3>Left before mainnet</h3>
+          <ul>
+            <li>Outside audit of NexusSwap (about 200 lines, plus the 250 line SK256 hash library).</li>
+            <li>Hosting of the relay and a keeper, HTTPS, and the site.</li>
+            <li>Mainnet deploy on the chains chosen (well under 1 USD each in gas today).</li>
+            <li>Module verification by Nexus, and WalletConnect for paying from the wallet.</li>
+            <li>Launch limits per swap and the confirmations per chain.</li>
+          </ul>
+        </div>
+      </div>
+      <div class="foot"><span>Nexus DEX &middot; Overview</span><span>10</span></div>
+    </section>
+
+    <!-- 11 asks -->
+    <section class="slide dark">
+      <div class="kicker">Next steps</div>
+      <h1>What we would like to decide together</h1>
+      <div class="cols" style="grid-template-columns: 1fr 1fr; gap: 26px; margin-top: 8px">
+        <div>
+          <h3>1. The module in the desktop wallet</h3>
+          <p class="muted">Review and verify the module (the usual repository verification: public repo, commit hash, signed repo_info.json), so wallet users can install it without developer mode.</p>
+          <h3>2. Hosting</h3>
+          <p class="muted">Who runs the relay and a keeper on mainnet: a small VPS, Nexus infrastructure, or both (two independent keepers make it stronger). Costs are low; see "What mainnet needs".</p>
+        </div>
+        <div>
+          <h3>3. Chains and launch limits</h3>
+          <p class="muted">Which chains first (BSC and Polygon are the cheapest to use), the largest swap at launch, and when to raise it.</p>
+          <h3>4. Audit and announcement</h3>
+          <p class="muted">An outside audit of the contract, then a careful public beta with small amounts, announced through Nexus channels.</p>
+          <h3>5. Liquidity</h3>
+          <p class="muted">A few makers with NXS and stablecoins on both sides at launch, for example with the maker program.</p>
+        </div>
+      </div>
+      <p class="muted" style="margin-top: auto">Documents with this overview: NexusSwap contract guide, What mainnet needs. Contact: impressions@nexus.io</p>
+      <div class="foot"><span>Nexus DEX &middot; Overview</span><span>11</span></div>
+    </section>
+  </body>
+</html>

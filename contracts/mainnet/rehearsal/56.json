@@ -1,0 +1,17 @@
+{
+  "chainId": 56,
+  "chain": "BNB Smart Chain",
+  "swap": "0xba4a97ace5c564e4bdbc8762064ccf329022ebe7",
+  "fromBlock": 133896454,
+  "tx": "0x171dbe58159e9bb4f1bcc9aeeed0487a05dadc5fc57819ad0d17bcbd53744176",
+  "deployer": "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266",
+  "codeHash": "0x942e52b3137a2c75fd984725ac2ce7ef27e975e8380b93a9ff11e0ba23c5adc9",
+  "gasUsed": 1874239,
+  "compiler": {
+    "solc": "0.8.28",
+    "optimizer": true,
+    "runs": 200
+  },
+  "explorer": "https://bscscan.com/address/0xba4a97ace5c564e4bdbc8762064ccf329022ebe7",
+  "at": "2026-11-16T08:34:51.248Z"
+}

@@ -1,0 +1,132 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <title>Nexus DEX - What mainnet needs</title>
+    <link rel="stylesheet" href="style.css" />
+  </head>
+  <body class="doc">
+    <section class="cover">
+      <div class="brand">
+        <svg viewBox="0 0 32 32" width="32" height="32">
+          <circle cx="12" cy="16" r="7.5" fill="none" stroke="#e6edf7" stroke-width="3" />
+          <circle cx="20" cy="16" r="7.5" fill="none" stroke="#3fc0ff" stroke-width="3" />
+          <path d="M 16.9 10.4 A 7.5 7.5 0 0 1 19.5 16" fill="none" stroke="#e6edf7" stroke-width="3" />
+        </svg>
+        Nexus DEX
+      </div>
+      <h1>What mainnet<br />needs</h1>
+      <p class="sub">Everything that has to run, be paid for or be decided before real NXS and real stablecoins can be swapped: services, hosting options, keys, settings, the desktop wallet module and the launch.</p>
+      <div class="shotwrap"><img class="shot wallet-top" src="../img/w02-ticket-dark.png" /></div>
+      <div class="meta">Version of 16 November 2026<br />Nexus &middot; impressions@nexus.io</div>
+    </section>
+
+    <main>
+      <span class="doctitle" style="display: none">What mainnet needs</span>
+
+      <h2 style="margin-top: 0">1. The checklist</h2>
+      <table>
+        <tr><th style="width: 34%">Item</th><th>What it takes</th><th style="width: 15%">Cost</th><th style="width: 13%">Status</th></tr>
+        <tr><td>NexusSwap on each EVM chain</td><td>One deploy per chain with a funded deployer, then source verification on the explorer</td><td>under 1 USD per chain</td><td><span class="tag good">scripted, rehearsed</span></td></tr>
+        <tr><td>Relay (order book and watcher)</td><td>A small server with HTTPS, always on</td><td>5 to 20 EUR a month</td><td><span class="tag warn">hosting to choose</span></td></tr>
+        <tr><td>Keeper (independent helper)</td><td>A second small process, ideally run by someone else than the relay</td><td>0 to 10 EUR a month</td><td><span class="tag warn">hosting to choose</span></td></tr>
+        <tr><td>Gas for the watcher and keepers</td><td>A little of each chain's coin in their addresses, for collects and refunds they send for users</td><td>about 20 to 50 USD per chain to start</td><td><span class="tag">to fund</span></td></tr>
+        <tr><td>EVM RPC access</td><td>Public RPCs work; a paid plan is steadier under load</td><td>0 to 50 USD a month</td><td><span class="tag">to decide</span></td></tr>
+        <tr><td>Nexus API node (website only)</td><td>A mainnet node with its public API, plus one or two witness nodes</td><td>a node Nexus may already run</td><td><span class="tag">to decide</span></td></tr>
+        <tr><td>Website hosting</td><td>Static files on any host or CDN, a domain</td><td>0 to 10 EUR a month</td><td><span class="tag">to decide</span></td></tr>
+        <tr><td>Desktop wallet module</td><td>Public repository, Nexus repository verification</td><td>none</td><td><span class="tag good">built, tested in dev mode</span></td></tr>
+        <tr><td>WalletConnect project id</td><td>Free account at reown.com, for paying from phone wallets</td><td>free tier</td><td><span class="tag good">works on testnet</span></td></tr>
+        <tr><td>Outside audit of the contract</td><td>About 450 lines of Solidity</td><td>quote needed</td><td><span class="tag warn">recommended</span></td></tr>
+        <tr><td>Launch settings</td><td>Chains, tokens, largest swap, confirmations per chain</td><td>none</td><td><span class="tag">to decide</span></td></tr>
+        <tr><td>Liquidity at launch</td><td>A few makers with NXS and stablecoins (the maker program can run offers)</td><td>their own coins</td><td><span class="tag">to arrange</span></td></tr>
+      </table>
+      <p class="muted">The DEX itself takes no fees and holds no coins. The running costs are hosting and the gas the helpers spend for users. Users pay their own network fees, and a one-time 1 NXS on Nexus to create their reveal register (it lets the profile publish a swap secret).</p>
+
+      <h2>2. What runs where</h2>
+      <table>
+        <tr><th style="width: 22%">Part</th><th>Does</th><th style="width: 32%">Needs</th></tr>
+        <tr><td><b>Website</b></td><td>The pages people use in a browser. Signs both sides of a swap in the browser; keeps the swap in the browser's storage.</td><td>Static hosting with HTTPS; config file with the service addresses.</td></tr>
+        <tr><td><b>Desktop wallet module</b></td><td>The same pages inside Nexus Wallet. The Nexus side goes through the wallet's own core.</td><td>Nothing hosted for Nexus; the relay and the EVM RPCs, as the website.</td></tr>
+        <tr><td><b>Relay</b></td><td>Order book (offers, takes, liveness of makers), market data, and the watcher: it collects payments for sellers who only gave a receiving address, and refunds locks long past their deadline.</td><td>Node.js 24, about 200 MB of memory, a data folder, HTTPS in front (Caddy or Cloudflare); one watcher key per chain with some gas.</td></tr>
+        <tr><td><b>Keeper</b></td><td>A second, independent helper: collects on request with the secret and refunds old locks. Reads only the contracts, shares nothing with the relay. Daily limits per chain and per address so nobody can drain its gas.</td><td>Node.js, a key per chain with some gas, HTTPS.</td></tr>
+        <tr><td><b>Maker program</b> (optional)</td><td>Keeps offers up around the clock for a market maker, from a server.</td><td>The maker's own Nexus profile and EVM key, its own limits.</td></tr>
+      </table>
+      <div class="box blue">If the relay is down, running swaps still finish: every lock opens with the secret or after its deadline, anyone may send the claim or the refund, and the keeper does it on its own. Only new offers and takes wait for the relay. Two keepers run by different people make this stronger.</div>
+
+      <h2>3. Hosting options compared</h2>
+      <table>
+        <tr><th style="width: 19%"></th><th>VPS run by the DEX maintainer</th><th>Run by Nexus</th><th>Self-hosted by anyone</th></tr>
+        <tr><td><b>What</b></td><td>One small rented server (for example 2 vCPU, 4 GB) with relay, keeper and the website, behind Cloudflare.</td><td>Relay and keeper on Nexus infrastructure next to its own nodes, site on a Nexus domain.</td><td>The code is open: anyone runs a relay or a keeper and points a site at it.</td></tr>
+        <tr><td><b>Cost</b></td><td>5 to 20 EUR a month plus gas</td><td>little extra on existing servers, plus gas</td><td>borne by whoever runs it</td></tr>
+        <tr><td><b>Set-up effort</b></td><td>Low: scripted, about a day including HTTPS and monitoring</td><td>Low to medium, depends on the Nexus setup</td><td>Medium per operator</td></tr>
+        <tr><td><b>Trust</b></td><td>Users trust the maintainer to keep it up (never with their coins)</td><td>The Nexus name behind it; strongest signal for users</td><td>Spread over many; users pick a relay</td></tr>
+        <tr><td><b>Nexus API</b></td><td>Needs access to a public Nexus node</td><td>Uses the Nexus nodes directly</td><td>Each operator needs one</td></tr>
+        <tr><td><b>Good for</b></td><td>A fast beta</td><td>The long run, with the module in the official wallet</td><td>Resilience later</td></tr>
+      </table>
+      <p><b>Suggestion:</b> start the beta on a VPS (relay, keeper, site) and ask Nexus to run a second keeper; move the relay to Nexus infrastructure once the module is verified. None of the options lets the host take users' coins: the worst a host can do is stop listing offers.</p>
+
+      <h2>4. Keys and wallets</h2>
+      <table>
+        <tr><th style="width: 24%">Key</th><th>Used for</th><th style="width: 28%">Holds</th></tr>
+        <tr><td>Deployer</td><td>Only the one deploy per chain. No role afterwards: the contract has no owner.</td><td>The deploy cost, once</td></tr>
+        <tr><td>Watcher key, per chain</td><td>The relay sends collects and refunds for users with it.</td><td>Gas only; topped up now and then</td></tr>
+        <tr><td>Keeper key, per chain</td><td>The keeper's collects and refunds.</td><td>Gas only, with daily limits</td></tr>
+        <tr><td>Relay signing</td><td>None: offers and takes are signed by the users' own keys, the relay only checks them.</td><td>Nothing</td></tr>
+      </table>
+      <p>Each key lives in a file only its service reads. A stolen helper key can only spend that key's gas: claims always pay the lock's recipient, refunds its sender.</p>
+
+      <h2>5. Settings to decide</h2>
+      <ul>
+        <li><b>Chains at launch.</b> All five are ready. BSC and Polygon are the cheapest to use; Ethereum is the most expensive per swap but has the most USDT and USDC; Arbitrum and Base are cheap and popular.</li>
+        <li><b>Tokens.</b> Proposed: USDT, USDC and the native coin on each chain, with the addresses in the contract guide. No other tokens in the list; the site lets a user add one at their own risk.</li>
+        <li><b>Largest swap at launch</b> (relay setting per token), for example 500 USD, raised step by step.</li>
+        <li><b>Confirmations</b> before answering a lock, per chain. Proposal: Ethereum 12, BSC 15, Polygon 64, Arbitrum 240, Base 30, Nexus 2. More is safer and slower.</li>
+        <li><b>Swap times.</b> Default: the taker's lock 24 h, the maker's 12 h, at least 6 h between the two deadlines. They decide how long coins can be locked if the other side stops.</li>
+        <li><b>Witness nodes.</b> One or two Nexus nodes besides the main one, asked before EVM coins are locked against a Nexus lock.</li>
+      </ul>
+
+      <h2 class="pb">6. The desktop wallet module</h2>
+      <div class="grid2">
+        <div>
+          <img class="shot wallet-top" src="../img/w09-modules-page.png" />
+          <p class="caption">Nexus Wallet 3.1.5, Settings, Modules.</p>
+        </div>
+        <div>
+          <img class="shot wallet-top" src="../img/w06-swapped.png" />
+          <p class="caption">Two swaps sold from inside the wallet on the private test chain, both Swapped.</p>
+        </div>
+      </div>
+      <h3>Done</h3>
+      <ul class="check">
+        <li>Packaging: <code>module/build.mjs</code> builds the folder with <code>nxs_package.json</code>, the icon and one script. The same code as the website.</li>
+        <li>Nexus calls go through the wallet's core (<code>NEXUS.utilities.apiCall</code>); links open in the system browser.</li>
+        <li>Tested in Nexus Wallet 3.1.5 in developer mode against a private Nexus chain: sign in, sell for USDT with a receiving address, two real swaps, exact amounts received.</li>
+      </ul>
+      <h3>Left</h3>
+      <ul>
+        <li>Publish the source in a public GitHub repository and send the module zip and the commit hash to Nexus (developer@nexus.io) for the repository verification; Nexus returns the signed <code>repo_info.json</code> that lets normal users install it.</li>
+        <li>WalletConnect inside the module, so wallet users can also buy NXS by paying from a phone wallet (it already works on the website).</li>
+        <li>Today the module asks for the profile's password and PIN to sign the hash-locked DEBIT itself, because the core's API builds only its own transaction types. A core API call that builds a DEBIT with a given condition would let the module ask for the PIN only, through the wallet's own PIN dialog. That would be a small, welcome addition to the Nexus core.</li>
+      </ul>
+
+      <h2 class="pb">7. Open items before mainnet</h2>
+      <table>
+        <tr><th style="width: 30%">Item</th><th>Why it matters</th></tr>
+        <tr><td>Outside audit of NexusSwap</td><td>The contract holds the EVM side of every swap. Small and simple, so a short audit.</td></tr>
+        <tr><td>Confirmations and finality per chain</td><td>Decided at the deploy (section 5); the code takes them from the config.</td></tr>
+        <tr><td>Relay abuse limits</td><td>Someone could reserve offers with takes they never lock, or post offers under another maker's agent address. No coins at risk, but offers can be blocked for a while; stronger limits are planned.</td></tr>
+        <tr><td>One runner per Nexus profile</td><td>Running the maker program and a browser page on the same profile at the same time makes their claims collide. Documented, and a check is planned.</td></tr>
+        <tr><td>Refund to another address on the swap card</td><td>The contract has refundTo; the page button still has to be added (claim to another address is already there).</td></tr>
+        <tr><td>Terms of use and a risk notice</td><td>Short page on the site before the first swap: what the DEX does and does not do.</td></tr>
+      </table>
+
+      <h2>8. A careful launch</h2>
+      <ol>
+        <li><b>Private beta.</b> Contracts on two chains (for example BSC and Polygon), relay and keeper live, low largest swap, a few invited users and makers.</li>
+        <li><b>Public beta.</b> Announcement through Nexus channels, the module verified in the wallet, a second keeper by another operator.</li>
+        <li><b>Grow.</b> Raise the limits, add the other chains, more makers.</li>
+      </ol>
+      <div class="box green">From a decision on hosting and chains, the technical part of a private beta is a few days of work: deploy, configure, HTTPS, a first swap with small real amounts, then watching it.</div>
+    </main>
+  </body>
+</html>

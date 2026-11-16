@@ -1,0 +1,23 @@
+{
+  "name": "@nexus-dex/service",
+  "description": "Nexus DEX relay: signed offer book and a watcher that finishes the EVM side of swaps (holds no user keys or funds)",
+  "private": true,
+  "license": "MIT",
+  "version": "0.1.0",
+  "type": "module",
+  "scripts": {
+    "start": "tsx src/main.ts",
+    "compile": "tsc --noEmit",
+    "test": "vitest run"
+  },
+  "dependencies": {
+    "@nexus-dex/core": "*",
+    "tsx": "^4.20.0",
+    "viem": "^2.40.0"
+  },
+  "devDependencies": {
+    "@types/node": "^24.0.0",
+    "typescript": "^5.9.3",
+    "vitest": "^5.1.0"
+  }
+}

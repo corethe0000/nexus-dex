@@ -1,0 +1,162 @@
+{
+  "1": {
+    "name": "Ethereum",
+    "passed": true,
+    "forkBlock": 26426417,
+    "deployGas": 1915872,
+    "tokens": [
+      {
+        "address": "0xdAC17F958D2ee523a2206206994597C13D831ec7",
+        "symbol": "USDT",
+        "decimals": 6,
+        "lock": 286868,
+        "claim": 322331,
+        "refund": 78878
+      },
+      {
+        "address": "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48",
+        "symbol": "USDC",
+        "decimals": 6,
+        "lock": 301776,
+        "claim": 321606,
+        "refund": 78141
+      },
+      {
+        "address": "native",
+        "symbol": "ETH",
+        "lock": 152382,
+        "claim": 311915,
+        "refund": 43438
+      }
+    ],
+    "at": "2026-11-16T08:33:22.161Z"
+  },
+  "56": {
+    "name": "BNB Smart Chain",
+    "passed": true,
+    "forkBlock": 133896276,
+    "deployGas": 1915872,
+    "tokens": [
+      {
+        "address": "0x55d398326f99059fF775485246999027B3197955",
+        "symbol": "USDT",
+        "decimals": 18,
+        "lock": 272417,
+        "claim": 310925,
+        "refund": 67460
+      },
+      {
+        "address": "0x8AC76a51cc950d9822D68b83fE1Ad97B32Cd580d",
+        "symbol": "USDC",
+        "decimals": 18,
+        "lock": 295691,
+        "claim": 318193,
+        "refund": 74728
+      },
+      {
+        "address": "native",
+        "symbol": "BNB",
+        "lock": 152382,
+        "claim": 311915,
+        "refund": 43438
+      }
+    ],
+    "at": "2026-11-16T08:33:24.943Z"
+  },
+  "137": {
+    "name": "Polygon",
+    "passed": true,
+    "forkBlock": 97408357,
+    "deployGas": 1915872,
+    "tokens": [
+      {
+        "address": "0xc2132D05D31c914a87C6611C10748AEb04B58e8F",
+        "symbol": "USDT0",
+        "decimals": 6,
+        "lock": 295201,
+        "claim": 318754,
+        "refund": 75289
+      },
+      {
+        "address": "0x3c499c542cEF5E3811e1192ce70d8cC03d5c3359",
+        "symbol": "USDC",
+        "decimals": 6,
+        "lock": 301235,
+        "claim": 321517,
+        "refund": 78052
+      },
+      {
+        "address": "native",
+        "symbol": "POL",
+        "lock": 152382,
+        "claim": 311915,
+        "refund": 43438
+      }
+    ],
+    "at": "2026-11-16T08:33:28.378Z"
+  },
+  "8453": {
+    "name": "Base",
+    "passed": true,
+    "forkBlock": 58138165,
+    "deployGas": 1915872,
+    "tokens": [
+      {
+        "address": "0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913",
+        "symbol": "USDC",
+        "decimals": 6,
+        "lock": 301235,
+        "claim": 321517,
+        "refund": 78052
+      },
+      {
+        "address": "0xfde4C96c8593536E31F229EA8f37b2ADa2699bb2",
+        "symbol": "USDT",
+        "decimals": 6,
+        "lock": 273052,
+        "claim": 311196,
+        "refund": 67731
+      },
+      {
+        "address": "native",
+        "symbol": "ETH",
+        "lock": 152382,
+        "claim": 311915,
+        "refund": 43438
+      }
+    ],
+    "at": "2026-11-16T08:33:31.293Z"
+  },
+  "42161": {
+    "name": "Arbitrum One",
+    "passed": true,
+    "forkBlock": 26426417,
+    "deployGas": 1915872,
+    "tokens": [
+      {
+        "address": "0xFd086bC7CD5C481DCC9C85ebE478A1C0b69FCbb9",
+        "symbol": "USD₮0",
+        "decimals": 6,
+        "lock": 283400,
+        "claim": 320475,
+        "refund": 77010
+      },
+      {
+        "address": "0xaf88d065e77c8cC2239327C5EDb3A432268e5831",
+        "symbol": "USDC",
+        "decimals": 6,
+        "lock": 301235,
+        "claim": 321517,
+        "refund": 78052
+      },
+      {
+        "address": "native",
+        "symbol": "ETH",
+        "lock": 152382,
+        "claim": 311915,
+        "refund": 43438
+      }
+    ],
+    "at": "2026-11-16T08:33:35.669Z"
+  }
+}

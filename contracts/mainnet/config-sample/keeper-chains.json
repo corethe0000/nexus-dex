@@ -1,0 +1,47 @@
+{
+  "1": {
+    "rpc": "https://ethereum-rpc.publicnode.com",
+    "swap": "0xb1e2eb83cffb41df240c74ce66b36fbd79841346",
+    "fromBlock": "26426423",
+    "confirmations": 12,
+    "claimMargin": 600,
+    "refundDelay": 1800,
+    "keyFile": "<file with the keeper key for this chain>"
+  },
+  "56": {
+    "rpc": "https://bsc-rpc.publicnode.com",
+    "swap": "0xba4a97ace5c564e4bdbc8762064ccf329022ebe7",
+    "fromBlock": "133896454",
+    "confirmations": 15,
+    "claimMargin": 600,
+    "refundDelay": 1800,
+    "keyFile": "<file with the keeper key for this chain>"
+  },
+  "137": {
+    "rpc": "https://polygon-bor-rpc.publicnode.com",
+    "swap": "0xb87f7b8d3bb6e12d14e254088657d96a68692eff",
+    "fromBlock": "97408417",
+    "confirmations": 64,
+    "claimMargin": 600,
+    "refundDelay": 1800,
+    "keyFile": "<file with the keeper key for this chain>"
+  },
+  "8453": {
+    "rpc": "https://base-rpc.publicnode.com",
+    "swap": "0x2ca6dd3dce426aca3c3fa2fd06baae85199f8654",
+    "fromBlock": "58138700",
+    "confirmations": 30,
+    "claimMargin": 600,
+    "refundDelay": 1800,
+    "keyFile": "<file with the keeper key for this chain>"
+  },
+  "42161": {
+    "rpc": "https://arbitrum-one-rpc.publicnode.com",
+    "swap": "0x40ec018cda28e11c3bff23487dce6102459a25b9",
+    "fromBlock": "524697423",
+    "confirmations": 240,
+    "claimMargin": 600,
+    "refundDelay": 1800,
+    "keyFile": "<file with the keeper key for this chain>"
+  }
+}

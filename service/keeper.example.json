@@ -1,0 +1,20 @@
+{
+  "host": "127.0.0.1",
+  "port": 3201,
+  "trustProxy": false,
+  "keyFile": "/home/nexus/dex-keeper/keeper-key",
+  "sweepSeconds": 60,
+  "chains": {
+    "31337": {
+      "rpc": "http://127.0.0.1:8545",
+      "swap": "0x0000000000000000000000000000000000000000",
+      "fromBlock": "0",
+      "confirmations": 2,
+      "claimMargin": 120,
+      "refundDelay": 600,
+      "tokens": {
+        "0x0000000000000000000000000000000000000000": "1000000000000000"
+      }
+    }
+  }
+}

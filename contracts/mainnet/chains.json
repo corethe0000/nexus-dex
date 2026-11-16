@@ -1,0 +1,125 @@
+{
+  "comment": "Mainnet chains for NexusSwap: public RPC for reads and the fork check, explorer, the stablecoins the site lists and a proposed confirmation depth (decided at the mainnet deploy, task 42cf1947). Checked by tools/fork-check.mjs against a fork of each chain; tools/configs.mjs turns it plus deployments/ into the site, relay and keeper settings.",
+  "chains": {
+    "1": {
+      "name": "Ethereum",
+      "rpc": "https://ethereum-rpc.publicnode.com",
+      "explorer": "https://etherscan.io",
+      "native": {
+        "symbol": "ETH",
+        "usd": "ethereum"
+      },
+      "minConfirmations": 12,
+      "finalDelay": 780,
+      "finality": "about 13 min to the finalized block (2 epochs); 12 blocks is about 2.5 min",
+      "tokens": [
+        {
+          "symbol": "USDT",
+          "address": "0xdAC17F958D2ee523a2206206994597C13D831ec7",
+          "decimals": 6
+        },
+        {
+          "symbol": "USDC",
+          "address": "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48",
+          "decimals": 6
+        }
+      ]
+    },
+    "56": {
+      "name": "BNB Smart Chain",
+      "rpc": "https://bsc-rpc.publicnode.com",
+      "explorer": "https://bscscan.com",
+      "native": {
+        "symbol": "BNB",
+        "usd": "binancecoin"
+      },
+      "minConfirmations": 15,
+      "finalDelay": 15,
+      "finality": "fast finality within a few blocks; 15 blocks is under 15 s",
+      "tokens": [
+        {
+          "symbol": "USDT",
+          "address": "0x55d398326f99059fF775485246999027B3197955",
+          "decimals": 18
+        },
+        {
+          "symbol": "USDC",
+          "address": "0x8AC76a51cc950d9822D68b83fE1Ad97B32Cd580d",
+          "decimals": 18
+        }
+      ]
+    },
+    "137": {
+      "name": "Polygon",
+      "rpc": "https://polygon-bor-rpc.publicnode.com",
+      "explorer": "https://polygonscan.com",
+      "native": {
+        "symbol": "POL",
+        "usd": "polygon-ecosystem-token"
+      },
+      "minConfirmations": 64,
+      "finalDelay": 120,
+      "finality": "milestone finality in seconds; 64 blocks is about 2 min",
+      "tokens": [
+        {
+          "symbol": "USDT",
+          "address": "0xc2132D05D31c914a87C6611C10748AEb04B58e8F",
+          "decimals": 6
+        },
+        {
+          "symbol": "USDC",
+          "address": "0x3c499c542cEF5E3811e1192ce70d8cC03d5c3359",
+          "decimals": 6
+        }
+      ]
+    },
+    "8453": {
+      "name": "Base",
+      "rpc": "https://base-rpc.publicnode.com",
+      "explorer": "https://basescan.org",
+      "native": {
+        "symbol": "ETH",
+        "usd": "ethereum"
+      },
+      "minConfirmations": 30,
+      "finalDelay": 60,
+      "finality": "blocks every 2 s; final once the batch is final on Ethereum; 30 blocks is about 1 min",
+      "tokens": [
+        {
+          "symbol": "USDC",
+          "address": "0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913",
+          "decimals": 6
+        },
+        {
+          "symbol": "USDT",
+          "address": "0xfde4C96c8593536E31F229EA8f37b2ADa2699bb2",
+          "decimals": 6
+        }
+      ]
+    },
+    "42161": {
+      "name": "Arbitrum One",
+      "rpc": "https://arbitrum-one-rpc.publicnode.com",
+      "explorer": "https://arbiscan.io",
+      "native": {
+        "symbol": "ETH",
+        "usd": "ethereum"
+      },
+      "minConfirmations": 240,
+      "finalDelay": 60,
+      "finality": "blocks every 0.25 s; final once the batch is final on Ethereum; 240 blocks is about 1 min",
+      "tokens": [
+        {
+          "symbol": "USDT",
+          "address": "0xFd086bC7CD5C481DCC9C85ebE478A1C0b69FCbb9",
+          "decimals": 6
+        },
+        {
+          "symbol": "USDC",
+          "address": "0xaf88d065e77c8cC2239327C5EDb3A432268e5831",
+          "decimals": 6
+        }
+      ]
+    }
+  }
+}

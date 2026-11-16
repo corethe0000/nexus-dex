@@ -1,0 +1,23 @@
+{
+  "name": "@nexus-dex/core",
+  "description": "Atomic swap logic between Nexus and EVM chains (BSC, Polygon): Nexus hash locks, EVM NexusSwap contract, swap state machine",
+  "private": true,
+  "license": "MIT",
+  "version": "0.1.0",
+  "type": "module",
+  "scripts": {
+    "compile": "tsc --noEmit",
+    "test": "vitest run"
+  },
+  "dependencies": {
+    "@noble/curves": "^2.4.0",
+    "@noble/hashes": "^2.4.0",
+    "hash-wasm": "^4.13.0",
+    "viem": "^2.40.0"
+  },
+  "devDependencies": {
+    "@types/node": "^24.0.0",
+    "typescript": "^5.9.3",
+    "vitest": "^5.1.0"
+  }
+}

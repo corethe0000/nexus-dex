@@ -1,0 +1,17 @@
+{
+  "chainId": 42161,
+  "chain": "Arbitrum One",
+  "swap": "0x40ec018cda28e11c3bff23487dce6102459a25b9",
+  "fromBlock": 524697423,
+  "tx": "0x5ba195bb689081fee4e3604170f4e78c8c6618a4baa5e82f1d71dc00b4f249b4",
+  "deployer": "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266",
+  "codeHash": "0x942e52b3137a2c75fd984725ac2ce7ef27e975e8380b93a9ff11e0ba23c5adc9",
+  "gasUsed": 1874239,
+  "compiler": {
+    "solc": "0.8.28",
+    "optimizer": true,
+    "runs": 200
+  },
+  "explorer": "https://arbiscan.io/address/0x40ec018cda28e11c3bff23487dce6102459a25b9",
+  "at": "2026-11-16T08:35:12.351Z"
+}

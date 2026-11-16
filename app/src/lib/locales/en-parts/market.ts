@@ -1,0 +1,105 @@
+//English texts: trading on the Nexus market (ui/NexusMarket.tsx; lib/nexus-market.ts has none) and the swap and offer messages of lib/desk.ts
+import type { Plural } from '../en';
+
+export const market = {
+  //after a transaction: {text} is one of the done texts below
+  nmFinalNextBlock: '{text} It is final with the next block, about a minute.',
+  nmDone: '{text} Done.',
+  nmCollected: 'Collected {list}.',
+  nmCollectedJoin: ' and ', //between the amounts of different coins in nmCollected
+  nmPaidGot: 'You paid {pay} {payTicker} and got {get} {getTicker}.',
+  nmCancelled: 'Order cancelled, the coins go back to your account.',
+  nmOrderUp: 'Your order is up: {give} {giveTicker} for {want} {wantTicker}.',
+  //payments waiting to be collected
+  nmWaitingTitle: 'Payments waiting for you:',
+  nmWaitingItem: { one: '{amount} {ticker}', other: '{amount} {ticker} ({n} payments)' } as Plural,
+  nmWaitingJoin: ', ', //between the nmWaitingItem entries
+  nmWaitingText: '{list}. On Nexus the receiver collects a payment with its own signature.',
+  nmCollecting: 'Collecting...',
+  nmCollect: 'Collect',
+  //what is missing to take an order or place one
+  nmNeedAmount: 'You need {amount} {ticker} in one account.',
+  nmNeedAccount: 'You need an account for {ticker} to receive into. Make one in your Nexus wallet.',
+  nmNoAccount: 'You have no {ticker} account.',
+  nmLargestAccount: 'Your largest {ticker} account holds {amount}.',
+  nmToken: 'token', //name of a token that has no ticker
+  //simple view: the ticket and its button
+  nmTicketLabel: 'Trade on the Nexus market',
+  nmYouPay: 'You pay',
+  nmYouGet: 'You get',
+  nmCoinYouPay: 'Coin you pay',
+  nmCoinYouGet: 'Coin you get',
+  nmOnNexus: 'On Nexus',
+  nmBalance: 'Balance {amount} {ticker}',
+  nmSwapCoins: 'Swap the two coins',
+  nmRate: '1 {get} = {price} {pay}',
+  nmTakenWhole: 'The best order that fits asks {amount} {ticker}. Orders are taken whole, so take this one and then the next for the rest.',
+  nmOneTx: 'One transaction pays both sides at once. Nothing is locked and nothing to wait for.',
+  nmOtherOrders: 'Other orders',
+  nmSizeFor: 'for {amount}', //small line under an order size button "12 NXS"
+  nmAddSecondCoin: 'Add a second coin to trade with',
+  nmReading: 'Reading the Nexus market...',
+  nmNobodyOffers: 'Nobody offers {get} for {pay} right now',
+  nmEnterAmountLike: 'Enter an amount like 12.5',
+  nmNoOrderFits: 'No order fits this amount',
+  nmSignInToTrade: 'Sign in to Nexus to trade',
+  nmTakingOrder: 'Taking the order...',
+  nmNotReady: 'Not ready yet',
+  nmPayGet: 'Pay {pay} {payTicker}, get {get} {getTicker}',
+  nmHideOwn: 'Hide your own order',
+  nmPlaceOwn: 'Or place your own order: {pay} for {get} at your price',
+  //advanced view: pair, book and own orders
+  nmCoin: 'Coin',
+  nmPricedIn: 'Priced in',
+  nmBestSell: 'Best sell',
+  nmBestBuy: 'Best buy',
+  nmOrdersLabel: 'Orders {base}/{quote}',
+  nmSelling: 'Selling {ticker}',
+  nmBuying: 'Buying {ticker}',
+  nmYouBuyFromThem: 'you buy from them',
+  nmYouSellToThem: 'you sell to them',
+  nmNoOrders: 'No orders here right now.',
+  nmPriceIn: 'Price ({ticker})',
+  nmAction: 'Action',
+  nmYours: 'yours',
+  nmTaking: 'Taking...',
+  nmTake: 'Take',
+  nmBestPrices: 'Best prices {low} to {high} {quote} per {base}', //{low} and {high} are prices shown in bold
+  nmPriceBothWays: 'A price shows here once there are orders both ways.',
+  nmPlaceOrderLabel: 'Place an order',
+  nmDirection: 'Direction',
+  nmSell: 'Sell {ticker}',
+  nmBuy: 'Buy {ticker}',
+  nmYourOrders: 'Your orders',
+  nmGiveFor: 'Give {give} {giveTicker} for {want} {wantTicker}',
+  nmCancelling: 'Cancelling...',
+  nmCancel: 'Cancel',
+  //an order at your own price
+  nmYouGive: 'You give ({ticker})',
+  nmAmountYouGive: 'Amount of {ticker} you give',
+  nmPerLabel: '{want} per {give}',
+  nmPriceInPer: 'Price in {want} per {give}',
+  nmYouGetWhenTaken: 'You get {amount} {want} when someone takes it. Your {give} stays in the order until then; cancel any time.',
+  nmPlacing: 'Placing your order...',
+  nmSignIn: 'Sign in to Nexus',
+  nmPlaceOrder: 'Place order: {give} {giveTicker} for {want} {wantTicker}',
+  nmEnterAmountPrice: 'Enter an amount and a price',
+  //coin picker
+  nmPickCoin: 'Pick a coin',
+  nmOtherToken: 'Other token...',
+  nmTokenAddress: 'Token address',
+  nmAdd: 'Add',
+  nmNotToken: 'That address is not a token.',
+  nmNoTokenFound: 'No token found at that address.',
+  //desk: why a swap or offer cannot go on
+  deskReceiveOnlyPays: 'An address you typed in can only receive. To pay with a token on another chain, connect a wallet such as MetaMask.',
+  deskOfferNotGenuine: "This offer does not carry its maker's signature. It was not taken.",
+  deskSecretNotSaved: "This browser did not save the swap's secret (storage blocked or full). Without it the coins could be lost, so the offer was not taken.",
+  deskOfferGone: 'That offer is gone.',
+  deskConnectBoth: 'Connect your EVM wallet and sign in to Nexus first.',
+  deskConnectEvm: 'Connect your EVM wallet first.',
+  deskSignInProfile: 'Sign in to the Nexus profile of this swap to carry on.',
+  deskConnectWallet: 'Connect the wallet {address} to carry on.',
+  deskStoppedBeforeLock: 'you stopped it before locking anything', //shown after "Stopped: "
+  deskRepostFailed: 'posting your offer again failed: {error}', //shown after "Your offers could not be kept online: "
+} satisfies Record<string, string | Plural>;

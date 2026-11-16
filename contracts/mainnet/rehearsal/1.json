@@ -1,0 +1,17 @@
+{
+  "chainId": 1,
+  "chain": "Ethereum",
+  "swap": "0xb1e2eb83cffb41df240c74ce66b36fbd79841346",
+  "fromBlock": 26426423,
+  "tx": "0x9eb74ebcc01715aa1b882b3921885f591973c00531efe6080c8aa1142b0d8c63",
+  "deployer": "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266",
+  "codeHash": "0x942e52b3137a2c75fd984725ac2ce7ef27e975e8380b93a9ff11e0ba23c5adc9",
+  "gasUsed": 1874239,
+  "compiler": {
+    "solc": "0.8.28",
+    "optimizer": true,
+    "runs": 200
+  },
+  "explorer": "https://etherscan.io/address/0xb1e2eb83cffb41df240c74ce66b36fbd79841346",
+  "at": "2026-11-16T08:34:36.691Z"
+}

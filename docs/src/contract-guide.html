@@ -1,0 +1,169 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <title>NexusSwap - Contract guide</title>
+    <link rel="stylesheet" href="style.css" />
+  </head>
+  <body class="doc">
+    <section class="cover">
+      <div class="brand">
+        <svg viewBox="0 0 32 32" width="32" height="32">
+          <circle cx="12" cy="16" r="7.5" fill="none" stroke="#e6edf7" stroke-width="3" />
+          <circle cx="20" cy="16" r="7.5" fill="none" stroke="#3fc0ff" stroke-width="3" />
+          <path d="M 16.9 10.4 A 7.5 7.5 0 0 1 19.5 16" fill="none" stroke="#e6edf7" stroke-width="3" />
+        </svg>
+        Nexus DEX
+      </div>
+      <h1>NexusSwap<br />contract guide</h1>
+      <p class="sub">The hash time locked swap contract on BSC, Polygon, Ethereum, Arbitrum and Base: what it does, how it was tested, and how to deploy and verify it on mainnet.</p>
+      <div class="meta">Version of 16 November 2026<br />Solidity 0.8.28, optimizer 200 runs<br />Nexus &middot; impressions@nexus.io</div>
+    </section>
+
+    <main>
+      <span class="doctitle" style="display: none">NexusSwap contract guide</span>
+
+      <h2 style="margin-top: 0">1. In short</h2>
+      <p>NexusSwap holds one side of an atomic swap between Nexus and an EVM chain. A lock holds an ERC-20 token or the chain's own coin for a fixed recipient until a deadline. Whoever shows the secret behind the lock's hash before the deadline pays the recipient; after the deadline anyone can return the coins to the sender. The Nexus side of the same swap is a Tritium DEBIT locked to the same hash.</p>
+      <div class="kpi">
+        <div><b>0</b><span>owners, admin keys, fees, upgrade paths</span></div>
+        <div><b>30 days</b><span>longest lock the contract takes</span></div>
+        <div><b>5 mainnets</b><span>tested on forks with the real USDT and USDC</span></div>
+        <div><b>0x942e...adc9</b><span>code hash, the same on every chain</span></div>
+      </div>
+      <div class="box blue">
+        <b>Properties that matter for users</b>
+        <ul style="margin-top: 4px">
+          <li>A claim always pays the lock's recipient, a refund always pays its sender. Nobody, including whoever sends the transaction, can redirect them. The only exceptions are made by the owners themselves: the recipient may claim to another address of its own (claimTo), the sender may refund to another address of its own (refundTo).</li>
+          <li>Anyone may send a claim (with the secret) or a refund (after the deadline). That is what lets the relay's watcher and independent keepers finish a swap for someone whose page is closed.</li>
+          <li>The contract holds no state other than the locks. Once deployed it cannot be changed or stopped.</li>
+        </ul>
+      </div>
+
+      <h2>2. A lock from start to end</h2>
+      <svg viewBox="0 0 640 120" width="100%" style="margin: 2mm 0 4mm">
+        <defs><marker id="m" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="#5a6b82" /></marker></defs>
+        <rect x="0" y="40" width="120" height="44" rx="10" fill="#f2f6fb" stroke="#5a6b82" />
+        <text x="60" y="67" text-anchor="middle" font-size="14" font-weight="800" fill="#0b1a2e">None</text>
+        <rect x="200" y="40" width="120" height="44" rx="10" fill="#e3f3fd" stroke="#0a8fd8" />
+        <text x="260" y="67" text-anchor="middle" font-size="14" font-weight="800" fill="#0b1a2e">Open</text>
+        <rect x="430" y="4" width="200" height="44" rx="10" fill="#e3f5ea" stroke="#1f8a4c" />
+        <text x="530" y="31" text-anchor="middle" font-size="14" font-weight="800" fill="#0b1a2e">Claimed</text>
+        <rect x="430" y="74" width="200" height="44" rx="10" fill="#fdf3dc" stroke="#c58a00" />
+        <text x="530" y="101" text-anchor="middle" font-size="14" font-weight="800" fill="#0b1a2e">Refunded</text>
+        <line x1="122" y1="62" x2="196" y2="62" stroke="#5a6b82" stroke-width="2" marker-end="url(#m)" />
+        <text x="160" y="54" text-anchor="middle" font-size="11" fill="#5a6b82">lock</text>
+        <line x1="322" y1="55" x2="426" y2="28" stroke="#1f8a4c" stroke-width="2" marker-end="url(#m)" />
+        <text x="330" y="22" text-anchor="middle" font-size="11" fill="#1f8a4c">secret, before deadline</text>
+        <line x1="322" y1="70" x2="426" y2="96" stroke="#c58a00" stroke-width="2" marker-end="url(#m)" />
+        <text x="372" y="112" text-anchor="middle" font-size="11" fill="#c58a00">after deadline</text>
+      </svg>
+      <ol>
+        <li><b>lock</b>: the sender moves the amount into the contract. The lock records sender, recipient, token, amount, hashlock and deadline. Its id is the hash of all of these plus a swap reference, so the same lock cannot be made twice.</li>
+        <li><b>claim</b>: before the deadline, with the secret whose SK256 hash is the hashlock. The secret is published in the Claimed event; that is how the other side of the swap learns it.</li>
+        <li><b>refund</b>: from the deadline on, if nobody claimed. Returns the full amount to the sender.</li>
+      </ol>
+      <p>A claim and a refund can never both happen: a claim needs <code style="white-space: nowrap">now &lt; deadline</code>, a refund needs <code style="white-space: nowrap">now &gt;= deadline</code>, and each moves the lock out of Open for good.</p>
+
+      <h2 class="pb">3. Functions</h2>
+      <table>
+        <tr><th style="width: 30%">Function</th><th style="width: 18%">Who may call</th><th>What it does</th></tr>
+        <tr><td><code>lock(recipient, token, amount, hashlock, deadline, nexusRef)</code></td><td>anyone (the sender)</td><td>Takes <code>amount</code> of <code>token</code> from the caller (or exactly <code>amount</code> as value for the native coin, token = 0x0) and opens a lock. Deadline must be in the future and at most 30 days away. Returns the lock id.</td></tr>
+        <tr><td><code>claim(id, secret)</code></td><td>anyone</td><td>Before the deadline, with the right secret: pays the recipient, marks the lock Claimed, emits the secret.</td></tr>
+        <tr><td><code>claimTo(id, secret, to)</code></td><td>the recipient only</td><td>Same as claim, paid to another address <code>to</code>. For a recipient whose own address cannot receive (a frozen USDT or USDC address, a contract that refuses ETH).</td></tr>
+        <tr><td><code>refund(id)</code></td><td>anyone</td><td>From the deadline on: pays the sender back, marks the lock Refunded.</td></tr>
+        <tr><td><code>refundTo(id, to)</code></td><td>the sender only</td><td>Same as refund, paid to another address <code>to</code> of the sender's choosing.</td></tr>
+        <tr><td><code>locks(id)</code>, <code>lockId(...)</code></td><td>read only</td><td>The stored lock; the id a lock with these values would get.</td></tr>
+        <tr><td><code>NATIVE</code>, <code>MAX_LOCK</code></td><td>constants</td><td>0x0 stands for the native coin; 30 days.</td></tr>
+      </table>
+      <h3>Events</h3>
+      <p><code>Locked(id, sender, recipient, token, amount, hashlock, deadline, nexusRef)</code>, <code>Claimed(id, secret)</code>, <code>Refunded(id)</code>. The relay, the keepers and the pages read only these events and the <code>locks</code> mapping.</p>
+      <h3>Errors</h3>
+      <p><code>BadParams</code> (zero recipient or amount, deadline in the past or over 30 days), <code>AlreadyExists</code>, <code>WrongValue</code> (native coin value does not match, or value sent with a token), <code>NotOpen</code>, <code>Expired</code>, <code>NotExpired</code>, <code>WrongSecret</code>, <code>TransferFailed</code> (token call failed, or a token delivered less than the amount), <code>NotRecipient</code>, <code>NotSender</code>, <code>Reentered</code>.</p>
+
+      <h2>4. The hash: SK256, the same as on Nexus</h2>
+      <p>The Nexus side of a swap is a DEBIT whose condition checks <code>SK256(state of the reveal register) == hashlock</code>, using the Nexus opcode OP::CRYPTO::SK256 (Skein-256 with the Nexus parameters). NexusSwap checks the same SK256 hash in Solidity (<code>Sk256.sol</code>, a pure library), so one secret opens both locks. The library is tested against vectors produced by the Nexus wallet code from the same secrets.</p>
+      <p>Most of the roughly 310,000 to 320,000 gas a claim uses goes to this hash. That is the price of using the hash Nexus has, instead of adding a new one to the Nexus core.</p>
+
+      <h2>5. Tokens</h2>
+      <ul>
+        <li><b>Tokens that return nothing</b> (USDT on Ethereum): every token call goes through a check that accepts no return data or a true return value, and refuses a call to an address without code.</li>
+        <li><b>Fee-on-transfer tokens are refused.</b> The contract measures what arrived; if it is not exactly the amount, the lock fails. A lock always holds what both sides agreed on.</li>
+        <li><b>Frozen addresses</b> (USDT and USDC can freeze one): a frozen recipient uses claimTo, a frozen sender uses refundTo. If the contract itself were frozen by a token issuer, every lock of that token would stay stuck; nothing in the contract can prevent that, so the site lists only plain stablecoins and the native coin.</li>
+        <li><b>Re-entry</b>: lock, claim and refund refuse to be called again while one of them runs (a transient storage flag, EIP-1153). State is always updated before coins move.</li>
+      </ul>
+
+      <h2 class="pb">6. Chains and tokens for mainnet</h2>
+      <p>Source of truth: <code>contracts/mainnet/chains.json</code>. The confirmations are a proposal, to be confirmed at the mainnet deploy.</p>
+      <table>
+        <tr><th>Chain</th><th>Token</th><th>Address</th><th class="num">Decimals</th><th class="num">Confirmations</th></tr>
+        <tr><td rowspan="2">Ethereum (1)</td><td>USDT</td><td class="mono">0xdAC17F958D2ee523a2206206994597C13D831ec7</td><td class="num">6</td><td class="num" rowspan="2">12</td></tr>
+        <tr><td>USDC</td><td class="mono">0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48</td><td class="num">6</td></tr>
+        <tr><td rowspan="2">BNB Smart Chain (56)</td><td>USDT</td><td class="mono">0x55d398326f99059fF775485246999027B3197955</td><td class="num">18</td><td class="num" rowspan="2">15</td></tr>
+        <tr><td>USDC</td><td class="mono">0x8AC76a51cc950d9822D68b83fE1Ad97B32Cd580d</td><td class="num">18</td></tr>
+        <tr><td rowspan="2">Polygon (137)</td><td>USDT0</td><td class="mono">0xc2132D05D31c914a87C6611C10748AEb04B58e8F</td><td class="num">6</td><td class="num" rowspan="2">64</td></tr>
+        <tr><td>USDC</td><td class="mono">0x3c499c542cEF5E3811e1192ce70d8cC03d5c3359</td><td class="num">6</td></tr>
+        <tr><td rowspan="2">Arbitrum One (42161)</td><td>USDT0</td><td class="mono">0xFd086bC7CD5C481DCC9C85ebE478A1C0b69FCbb9</td><td class="num">6</td><td class="num" rowspan="2">240</td></tr>
+        <tr><td>USDC</td><td class="mono">0xaf88d065e77c8cC2239327C5EDb3A432268e5831</td><td class="num">6</td></tr>
+        <tr><td rowspan="2">Base (8453)</td><td>USDC</td><td class="mono">0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913</td><td class="num">6</td><td class="num" rowspan="2">30</td></tr>
+        <tr><td>USDT</td><td class="mono">0xfde4C96c8593536E31F229EA8f37b2ADa2699bb2</td><td class="num">6</td></tr>
+      </table>
+      <p>Plus the native coin on each chain (ETH, BNB, POL). Note the different decimals on BSC (18) and elsewhere (6); the site and the relay take them from this list, never from the token. NexusSwap uses transient storage, so a chain needs the Cancun upgrade; all five have it, as the fork tests below show.</p>
+
+      <h2>7. How it was tested</h2>
+      <h3>Unit tests (Foundry)</h3>
+      <p>Lock, claim and refund for tokens and the native coin; wrong secret, early refund, late claim, double claim, re-entry from a token hook, a token that returns nothing, a fee-on-transfer token (refused), claimTo and refundTo only by their owner, the 30 day cap, and the SK256 hash against the wallet's vectors.</p>
+      <h3>Forks of the five mainnets</h3>
+      <p><code>contracts/test/Fork.t.sol</code> deploys NexusSwap on a local copy of each mainnet (nothing is sent to the real chain) and runs lock, claim, and lock, refund with the real token contracts and with the native coin. It also checks the decimals of each address in the list. Run on 16 November 2026, all passed:</p>
+      <table>
+        <tr><th>Chain</th><th>Token</th><th class="num">lock gas</th><th class="num">claim gas</th><th class="num">refund gas</th></tr>
+        <tr><td>Ethereum</td><td>USDT / USDC / ETH</td><td class="num">286,868 / 301,776 / 152,382</td><td class="num">322,331 / 321,606 / 311,915</td><td class="num">78,878 / 78,141 / 43,438</td></tr>
+        <tr><td>BSC</td><td>USDT / USDC / BNB</td><td class="num">272,417 / 295,691 / 152,382</td><td class="num">310,925 / 318,193 / 311,915</td><td class="num">67,460 / 74,728 / 43,438</td></tr>
+        <tr><td>Polygon</td><td>USDT0 / USDC / POL</td><td class="num">295,201 / 301,235 / 152,382</td><td class="num">318,754 / 321,517 / 311,915</td><td class="num">75,289 / 78,052 / 43,438</td></tr>
+        <tr><td>Arbitrum</td><td>USDT0 / USDC / ETH</td><td class="num">283,400 / 301,235 / 152,382</td><td class="num">320,475 / 321,517 / 311,915</td><td class="num">77,010 / 78,052 / 43,438</td></tr>
+        <tr><td>Base</td><td>USDC / USDT / ETH</td><td class="num">301,235 / 273,052 / 152,382</td><td class="num">321,517 / 311,196 / 311,915</td><td class="num">78,052 / 67,731 / 43,438</td></tr>
+      </table>
+      <p class="muted">Gas measured inside the test, so slightly above what a real transaction uses. A token lock also needs an approve first (usually 30,000 to 50,000 gas).</p>
+      <h3>Public testnets and the full swap</h3>
+      <p>End-to-end swaps through the website on Sepolia and BSC testnet (MetaMask on one side, a maker on the other), including a refund after the deadline; and many more on a private Nexus chain with a local EVM chain: both directions, either side stopping, the watcher and the keeper finishing for a closed page, claim to another address when the recipient cannot receive.</p>
+      <div class="box green">The current version runs on the public testnets since 16 November 2026: BSC testnet <code>0x86948d0c9612d6fe2f44548c9aad1db53c2aa335</code>, Sepolia <code>0xddacddede45a337f487fd917d52e0570a24a15f9</code>, the code on both equal to the build.</div>
+
+      <h2 class="pb">8. Deploying on mainnet</h2>
+      <p>Everything below is scripted and was rehearsed on 16 November 2026 on a fork of each of the five mainnets: the deploy went through and the code on chain matched the build (code hash <code>0x942e52b3...c5adc9</code> on all five).</p>
+      <h3>What it costs</h3>
+      <table>
+        <tr><th>Chain</th><th class="num">Deploy gas</th><th class="num">Gas price on 16 Nov 2026</th><th class="num">Deploy cost</th></tr>
+        <tr><td>Ethereum</td><td class="num">1.89 M</td><td class="num">0.13 gwei</td><td class="num">0.00024 ETH</td></tr>
+        <tr><td>BNB Smart Chain</td><td class="num">1.89 M</td><td class="num">0.05 gwei</td><td class="num">0.00009 BNB</td></tr>
+        <tr><td>Polygon</td><td class="num">1.89 M</td><td class="num">263 gwei</td><td class="num">0.50 POL</td></tr>
+        <tr><td>Arbitrum One</td><td class="num">1.90 M</td><td class="num">0.02 gwei</td><td class="num">0.00004 ETH</td></tr>
+        <tr><td>Base</td><td class="num">1.89 M</td><td class="num">0.006 gwei</td><td class="num">0.00001 ETH</td></tr>
+      </table>
+      <p class="muted">Gas prices move; the script prints the cost at the time of the deploy. A whole swap on the EVM side (approve, lock, claim) is about 650,000 gas in total, well under 1 USD on each of these chains at the prices above.</p>
+      <h3>Steps</h3>
+      <ol>
+        <li>Build: <code>cd contracts &amp;&amp; forge build</code> (solc 0.8.28, optimizer 200 runs, settings in <code>foundry.toml</code>).</li>
+        <li>Run the fork check once more: <code>node tools/fork-check.mjs</code>.</li>
+        <li>Fund a fresh deployer address with the cost above plus a margin. Its key goes in a file only the deploy reads.</li>
+        <li>See the cost: <code>CHAIN=56 DEPLOYER_KEY_FILE=key.txt ESTIMATE=1 npx tsx tools/deploy-mainnet.ts</code> (from <code>service/</code>).</li>
+        <li>Deploy: the same without <code>ESTIMATE=1</code>. The script checks the RPC is on the right chain, waits for the receipt, compares the code on chain with the build, and writes <code>contracts/mainnet/deployments/56.json</code> (address, first block, transaction, deployer, code hash). It refuses to deploy twice on a chain.</li>
+        <li>Publish the source: <code>ETHERSCAN_API_KEY=... sh tools/verify.sh 56</code>. One Etherscan API key covers Etherscan, BscScan, PolygonScan, Arbiscan and BaseScan. Without a key, upload <code>mainnet/NexusSwap.standard-input.json</code> on the explorer's Verify and Publish page (compiler v0.8.28, standard JSON input).</li>
+        <li>Write the settings: <code>node tools/configs.mjs</code> turns the deployments into the site's mainnet profile, the relay's chains and the keeper's chains (in <code>mainnet/config-out/</code>).</li>
+      </ol>
+      <pre>cd contracts &amp;&amp; forge build &amp;&amp; node tools/fork-check.mjs
+cd ../service
+CONTRACTS=../contracts/out CHAIN=56 DEPLOYER_KEY_FILE=key.txt ESTIMATE=1 npx tsx tools/deploy-mainnet.ts
+CONTRACTS=../contracts/out CHAIN=56 DEPLOYER_KEY_FILE=key.txt npx tsx tools/deploy-mainnet.ts
+cd ../contracts &amp;&amp; ETHERSCAN_API_KEY=... sh tools/verify.sh 56 &amp;&amp; node tools/configs.mjs</pre>
+      <p>The deployer has no role after the deploy: the contract has no owner. Its address only shows who deployed it.</p>
+
+      <h2>9. Reviews and what is still open</h2>
+      <ul>
+        <li>Internal security reviews (several rounds, the last on 16 November 2026, with separate reviewers per part). Findings were checked against the code and fixed: among them the fee-on-transfer refusal, refundTo, the 30 day cap, the re-entry guard and the claim checks before sending.</li>
+        <li>No outside audit yet. Recommended before mainnet; the scope is NexusSwap.sol (about 200 lines) and Sk256.sol (about 250 lines), plus the swap timing rules in the off-chain code that decide when each side may act.</li>
+        <li>Open before mainnet: the confirmations per chain (section 6).</li>
+      </ul>
+      <div class="box">Source: <code>contracts/src/NexusSwap.sol</code>, <code>contracts/src/Sk256.sol</code>; tests in <code>contracts/test/</code>; mainnet kit in <code>contracts/mainnet/</code> and <code>contracts/tools/</code>, deploy script <code>service/tools/deploy-mainnet.ts</code>.</div>
+    </main>
+  </body>
+</html>
